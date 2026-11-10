@@ -1,5 +1,24 @@
 # 部署
 
+## 先跑一次上线自查
+
+```bash
+npm run check:deploy
+```
+
+它逐条点一遍**只有站主人能定**的几项：`SITE_URL` 是不是正式域名（不是 localhost、走 HTTPS）、`site/site.ts` 里的 ICP 备案号与公安备案号、联系邮箱、站长平台验证码、备份对象存储凭据。缺拦路项时退出码非 0，可以直接挡在发布脚本里。
+
+现在跑会报两项没过，这是正常的——域名和备案号还没定：
+
+```
+✗ SITE_URL 指向正式地址（当前 http://localhost:3000）
+✗ ICP 备案号填在 site/site.ts 的 SITE.icp
+· 联系邮箱填在 SITE.contactEmail
+· 备份对象存储四项都填了
+```
+
+它们只影响「对外公开」这件事，不影响本地跑起来看效果。
+
 ## 用 Docker（推荐）
 
 需要一台装了 Docker（带 Compose）的机器。云服务器建议至少 2 核、4 GB 内存，构建镜像时要用到。
@@ -257,6 +276,8 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
 ```bash
 docker compose exec -T db pg_dump -U aihot aihot | gzip > myhot-$(date +%F).sql.gz
 ```
+
+备份链路的本机实测（2026-11-11）：api 与 worker 镜像里 `pg_dump`、`pg_restore` 都是 17.11，与服务端 PG17 匹配；`runBackup()` 生成 `/data/backups/aihot-<时间>.dump`（7.4 MB，`--format=custom --compress=6`）并做了 `pg_restore --list` 校验；把这份 dump 恢复到空库 `aihot_restore_test` 时 `pg_restore --no-owner --exit-on-error` 一次过，恢复后文章数、公开数与本机一致（相差的几行是转储时间点之后新处理的）。也就是说，**只要填上 `DB_BACKUP_STORE_*` 四项，每天 04:10 的自动备份与「取回来能还原」这两件事都是通的**；在那之前，它每天只在本地产一份 dump，机器没了就一起没了。
 
 数据都在三个 Docker 卷里：`db`（数据库）、`data`（上传的图片、图片缓存、本地备份）、`caddy`（证书）。`docker compose down` 不会删除它们；`docker compose down -v` 会。
 
