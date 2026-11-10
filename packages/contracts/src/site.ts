@@ -1,4 +1,4 @@
-﻿// First-party site API (/api/site/*). Not a public API: it may evolve with the website,
+// First-party site API (/api/site/*). Not a public API: it may evolve with the website,
 // but it is served from the same public read layer as v1, RSS and MCP.
 import type { MentionTarget } from "./mentions.ts";
 import type { CategoryKey, ChannelKey } from "./taxonomy.ts";
@@ -364,11 +364,29 @@ export interface ReportDetail {
    */
   cover: { url: string; srcSet?: string; width: number | null; height: number | null; caption: string | null } | null;
   metrics: Record<string, number>;
+  /** A weekly's or monthly's stock-take of the period's cards; null for a daily, or a period with none. */
+  ledger?: ReportLedger | null;
   readingMinutes: number;
   prev: string | null;
   next: string | null;
   /** The pages its paragraphs and summaries name (mentions.ts). */
   mentions: MentionTarget[];
+}
+
+export interface ReportLedgerLine {
+  itemId: string;
+  title: string;
+  detail: string;
+}
+
+/**
+ * The issue's stock-take: what this period's deals, readouts and model cards actually said, counted by rule
+ * from the structured cards rather than written by the model.
+ */
+export interface ReportLedger {
+  deals: { count: number; namedUsd: number; items: ReportLedgerLine[] };
+  readouts: { count: number; positive: number; negative: number; mixed: number; items: ReportLedgerLine[] };
+  models: { count: number; open: number; restricted: number; items: ReportLedgerLine[] };
 }
 
 export interface ReportIndexEntry {

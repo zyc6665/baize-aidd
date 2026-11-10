@@ -409,6 +409,8 @@ export async function loadReport(kind: ReportKind, key: string): Promise<ReportD
       ...(c.metrics?.firstPartyEvents !== undefined ? { firstPartyEvents: all.filter((i) => i.firstParty).length } : {}),
       ...(c.metrics?.sourcesCount !== undefined ? { sourcesCount: citedSources(c, kind === "daily" ? "daily" : "periodic", avail) } : {}),
     },
+    // A weekly's or monthly's stock-take of the period's cards, written at compose time by rule.
+    ledger: (c.ledger as ReportDetail["ledger"] | undefined) ?? null,
     readingMinutes: readingMinutes(text),
     prev,
     next,

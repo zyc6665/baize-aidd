@@ -17,6 +17,7 @@ import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import { emit } from "../modules.ts";
 import { arrangeDaily, candidates, dailyEdition, dailyPicks, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
+import { ledgerIsEmpty, periodLedger } from "./ledger.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
@@ -243,6 +244,8 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
   const overview = usable(written.overview, OVERVIEW_CHARS[kind]);
   const intro = (g: { label: string; items: Candidate[] }) => g.items.length >= INTRO_EVENTS ? usable(written.sections[g.label], INTRO_CHARS) : null;
   const [lead] = top as [Candidate, ...Candidate[]];
+  // The stock-take of the period's cards, counted by rule so the figures can be checked against the cards.
+  const ledger = await periodLedger(start, end);
   const content = {
     kind,
     title: kind === "weekly" ? `${SITE.name} 周报 · ${key}` : `${SITE.name} 月报 · ${key}`,
@@ -256,6 +259,7 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
     themes: groups.map((g) => ({ heading: g.label, summary: intro(g), storyRefs: g.items.map(({ category: _c, factKey: _f, ...e }) => e) })),
     storyOrder: top.map((e) => e.itemId),
     metrics: { totalStories: top.length, selectedCount: selected.length, reportsCovered: issues },
+    ...(ledgerIsEmpty(ledger) ? {} : { ledger }),
     generator: { version: REPORT_VERSION, model, written: overview !== null },
   };
   await saveReport(kind, key, start, end, content, reason, model, receiptId === null ? [] : [receiptId]);

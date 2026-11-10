@@ -18,6 +18,7 @@ import { Kicker } from "../../components/ui/Kicker";
 import type { OutlineEntry } from "../../components/ui/OutlineSheet";
 import { SourceAvatar } from "../../components/ui/SourceAvatar";
 import { Halftone } from "./Halftone";
+import { LedgerPage } from "./Ledger";
 import { Nameplate } from "./Nameplate";
 import { IssueDots } from "./IssueDots";
 import { Picture } from "../../components/ui/Picture";
@@ -524,8 +525,10 @@ export function ReportPaper({ report, index }: { report: ReportDetail; index: Re
         </SectionPage>
       ))}
 
+      {!daily && report.ledger && <LedgerPage id="s-ledger" no={pages.length + 1} ledger={report.ledger} />}
+
       {report.flashes.length > 0 && (
-        <SectionPage id="s-flash" no={pages.length + 1} label="快讯">
+        <SectionPage id="s-flash" no={pages.length + (!daily && report.ledger ? 2 : 1)} label="快讯">
           <ul className={`${COLUMNS} @[1040px]:columns-3`}>
             {report.flashes.map((f, i) => (
               <li key={`${keyOf(f)}-${i}`} className="flex break-inside-avoid gap-2.5 border-b border-line py-3 text-[14.5px] leading-[1.65]">

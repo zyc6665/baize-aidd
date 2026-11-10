@@ -16,3 +16,6 @@ package/
 fontsource-noto-sans-sc-*.tgz
 
 .pwinstall.log
+
+# 本地临时脚本（不做审计用）
+_probe/
