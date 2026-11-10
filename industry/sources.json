@@ -755,6 +755,55 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cradle",
+      "name": "Cradle 博客",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://api.feedifyrss.com/cradle-unfolded/blog-posts/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 4
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "公司",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-abcellera",
+      "name": "AbCellera 新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.abcellera.com/news",
+        "itemSelector": ".news_item",
+        "linkSelector": "a",
+        "titleSelector": ".news_heading",
+        "publishedAtSelector": ".news_meta-wrapper div:nth-child(2)",
+        "allowUrlPrefixes": [
+          "https://www.abcellera.com/news/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "abcellera",
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "公司",
+        "抗体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }
