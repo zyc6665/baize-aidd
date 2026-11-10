@@ -1,0 +1,18 @@
+白泽智药（Baize）
+Copyright (c) 2026 白泽智药.
+
+本站是在 AIHOT 开源框架的基础上改造出来的行业站：站点配置、分类体系、信源清单、提示词和
+品牌资产均为本站自己的内容，抓取、编排、发布的引擎来自上游。
+
+AIHOT（上游）
+Copyright (c) 2026 数字生命卡兹克. The code is licensed under the MIT License (LICENSE).
+
+The name "AIHOT" and the AIHOT logo are not licensed under the MIT License. Please use your own name
+and logo for your site. 本站已按要求使用自己的站名、标识与主色，未使用上游的名称与图形标识。
+
+This repository also contains third-party material under its own terms:
+
+- assets/og-fonts/: Noto Sans SC, SIL Open Font License 1.1 (assets/og-fonts/LICENSE).
+
+The sources in industry/sources.json are public feeds of their publishers. Their content belongs
+to them; by default the site shows only a summary and a link to the original.

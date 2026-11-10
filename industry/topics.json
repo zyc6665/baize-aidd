@@ -1,0 +1,292 @@
+{
+  "groups": [
+    {
+      "key": "company",
+      "name": "公司与平台",
+      "blurb": "按公司追踪：新模型、管线进展、交易与人事"
+    },
+    {
+      "key": "field",
+      "name": "技术方向",
+      "blurb": "按技术领域深挖：蛋白结构、分子生成、实验室自动化……"
+    },
+    {
+      "key": "genre",
+      "name": "内容类型",
+      "blurb": "按体裁浏览：新模型、论文、临床读出、交易、政策……"
+    }
+  ],
+  "topics": [
+    {
+      "slug": "isomorphic-labs",
+      "name": "Isomorphic Labs",
+      "group": "company",
+      "entityId": "isomorphic-labs",
+      "definition": "Isomorphic Labs 的药物设计引擎、与药企的合作交易、管线推进，以及从 DeepMind 分拆出来的技术与人事变化。"
+    },
+    {
+      "slug": "google",
+      "name": "Google DeepMind",
+      "group": "company",
+      "entityId": "google",
+      "aliases": ["DeepMind", "AlphaFold", "谷歌"],
+      "definition": "Google DeepMind 的 AlphaFold、AlphaProteo、AMIE 等生命科学与药物研发方向的新模型、论文与产品化进展。"
+    },
+    {
+      "slug": "recursion",
+      "name": "Recursion",
+      "group": "company",
+      "entityId": "recursion",
+      "definition": "Recursion 的表型组学平台、自研管线与临床读出、收购整合，以及和 Exscientia 合并后的公司动向。"
+    },
+    {
+      "slug": "insilico",
+      "name": "英矽智能 / Insilico Medicine",
+      "group": "company",
+      "entityId": "insilico",
+      "aliases": ["Insilico Medicine / 英矽智能", "Insilico"],
+      "definition": "英矽智能的 Pharma.AI 平台、ISM 系列自研管线与临床进展、对外授权交易与融资上市动向。"
+    },
+    {
+      "slug": "schrodinger",
+      "name": "Schrödinger",
+      "group": "company",
+      "entityId": "schrodinger",
+      "definition": "Schrödinger 的计算化学与物理建模软件平台、自有管线进展，以及软件业务与药物发现业务的经营变化。"
+    },
+    {
+      "slug": "chai-discovery",
+      "name": "Chai Discovery",
+      "group": "company",
+      "entityId": "chai-discovery",
+      "aliases": ["Chai-1", "Chai-2"],
+      "definition": "Chai Discovery 的 Chai 系列结构预测与抗体设计模型、开源权重、融资与对外合作。"
+    },
+    {
+      "slug": "evolutionaryscale",
+      "name": "EvolutionaryScale",
+      "group": "company",
+      "entityId": "evolutionaryscale",
+      "aliases": ["ESM"],
+      "definition": "EvolutionaryScale 的 ESM 系列蛋白语言模型、开源与商用条款变化，以及湿实验验证结果。"
+    },
+    {
+      "slug": "generate",
+      "name": "Generate Biomedicines",
+      "group": "company",
+      "entityId": "generate",
+      "aliases": ["Chroma"],
+      "definition": "Generate Biomedicines 的生成式蛋白设计平台、自研管线与临床进展，以及对外授权交易。"
+    },
+    {
+      "slug": "xtalpi",
+      "name": "晶泰科技 XtalPi",
+      "group": "company",
+      "entityId": "xtalpi",
+      "aliases": ["晶泰"],
+      "definition": "晶泰科技的晶型预测与自动化实验室、AI 药物发现业务、对外合作与港股上市后的经营动向。"
+    },
+    {
+      "slug": "dptech",
+      "name": "深势科技 DP Technology",
+      "group": "company",
+      "entityId": "dptech",
+      "aliases": ["深势", "Uni-Mol"],
+      "definition": "深势科技的 Uni-Mol、Uni-RNA 等分子与生物大模型、Bohrium 科研平台与产业化合作。"
+    },
+    {
+      "slug": "biomap",
+      "name": "百图生科 BioMap",
+      "group": "company",
+      "entityId": "biomap",
+      "aliases": ["百图"],
+      "definition": "百图生科的生命科学大模型、免疫与蛋白设计方向的技术进展，以及平台对外服务与管线合作。"
+    },
+    {
+      "slug": "nvidia",
+      "name": "NVIDIA 生命科学",
+      "group": "company",
+      "entityId": "nvidia",
+      "aliases": ["BioNeMo"],
+      "definition": "NVIDIA 面向药物研发的 BioNeMo 平台、算力与推理基础设施、对 AI 制药公司的投资与合作。"
+    },
+    {
+      "slug": "meta",
+      "name": "Meta AI 生命科学",
+      "group": "company",
+      "entityId": "meta",
+      "aliases": ["ESMFold", "ESM-2"],
+      "definition": "Meta AI 在蛋白质语言模型与生命科学基础模型上的工作：ESMFold、ESM-2 系列、开源权重，以及这些模型在结构与功能预测上的验证。"
+    },
+    {
+      "slug": "microsoft",
+      "name": "Microsoft Research",
+      "group": "company",
+      "entityId": "microsoft",
+      "aliases": ["BioEmu"],
+      "definition": "Microsoft Research 在分子模拟、蛋白动力学与生物基础模型上的成果，以及 Azure 面向生命科学的算力与工具。"
+    },
+    {
+      "slug": "wuxi",
+      "name": "药明系 WuXi",
+      "group": "company",
+      "entityId": "wuxi",
+      "aliases": ["药明康德", "药明生物"],
+      "definition": "药明康德与药明生物的 AI 辅助研发能力、产能与订单变化，以及海外监管与地缘政策对业务的影响。"
+    },
+    {
+      "slug": "drug-discovery",
+      "name": "药物发现",
+      "group": "field",
+      "tags": ["药物发现"],
+      "definition": "从靶点到候选分子的整条早期研发链路上，AI 参与的部分：新方法、新流程与真实项目里的效果验证。"
+    },
+    {
+      "slug": "target-discovery",
+      "name": "靶点发现",
+      "group": "field",
+      "tags": ["靶点发现", "多组学"],
+      "definition": "用组学数据、知识图谱和模型找新靶点、做靶点可成药性判断，以及靶点验证的实验结果。"
+    },
+    {
+      "slug": "protein-structure",
+      "name": "蛋白结构预测",
+      "group": "field",
+      "tags": ["蛋白结构"],
+      "definition": "结构预测与分子动力学：AlphaFold 之后的精度提升、复合物与构象系综、和实验结构的对照验证。"
+    },
+    {
+      "slug": "molecule-generation",
+      "name": "分子生成与设计",
+      "group": "field",
+      "tags": ["分子生成", "分子表征"],
+      "definition": "生成式模型设计新分子、分子表征与预训练方法，以及生成结果在湿实验里被验证到什么程度。"
+    },
+    {
+      "slug": "admet",
+      "name": "ADMET 与性质预测",
+      "group": "field",
+      "tags": ["ADMET", "虚拟筛选"],
+      "definition": "成药性预测：吸收分布代谢排泄与毒性建模、虚拟筛选与打分函数、预测结果和实测数据的偏差。"
+    },
+    {
+      "slug": "antibody",
+      "name": "抗体与蛋白设计",
+      "group": "field",
+      "tags": ["抗体设计", "多肽/小分子"],
+      "definition": "抗体、纳米抗体、多肽与结合蛋白的计算设计与优化：亲和力成熟、可开发性预测与实验验证。"
+    },
+    {
+      "slug": "chemistry",
+      "name": "化学合成与自动化",
+      "group": "field",
+      "tags": ["化学合成", "实验室自动化"],
+      "definition": "逆合成规划、反应条件预测、自动化合成与机器人实验室，以及这些系统与设计模型的闭环。"
+    },
+    {
+      "slug": "wet-lab-loop",
+      "name": "湿实验闭环",
+      "group": "field",
+      "tags": ["湿实验闭环", "实验室自动化"],
+      "definition": "设计—合成—测试—学习的闭环怎么真正跑起来：通量、数据质量、迭代周期与在真实项目上的产出。"
+    },
+    {
+      "slug": "clinical-design",
+      "name": "临床试验与真实世界数据",
+      "group": "field",
+      "tags": ["临床试验设计", "真实世界数据", "生物标志物"],
+      "definition": "用 AI 做试验设计、患者分层与入组优化、真实世界证据与生物标志物发现，以及监管对这些用法的态度。"
+    },
+    {
+      "slug": "foundation-models",
+      "name": "生物基础模型",
+      "group": "field",
+      "tags": ["基础模型", "数据/数据集"],
+      "definition": "面向分子、蛋白、细胞与组学的基础模型：预训练数据、规模律、迁移能力与下游任务表现。"
+    },
+    {
+      "slug": "agents",
+      "name": "智能体与科研自动化",
+      "group": "field",
+      "tags": ["智能体", "知识图谱"],
+      "definition": "让模型自己查文献、调工具、做实验设计的智能体系统，以及它们在科研流程里的可靠性边界。"
+    },
+    {
+      "slug": "infra",
+      "name": "算力与基础设施",
+      "group": "field",
+      "tags": ["算力/基础设施"],
+      "definition": "支撑这行的算力与工程：GPU 与云、推理成本、面向分子模拟的专用硬件与软件栈。"
+    },
+    {
+      "slug": "model-releases",
+      "name": "新模型发布",
+      "group": "genre",
+      "tags": ["模型发布"],
+      "definition": "新放出的 AIDD 模型与方法：开源权重、技术报告、能力边界与可复现性。"
+    },
+    {
+      "slug": "papers",
+      "name": "论文研究",
+      "group": "genre",
+      "tags": ["论文/研究"],
+      "definition": "值得看的论文与预印本：新架构、新训练方法、有实验验证的结论，以及被证伪的旧结论。"
+    },
+    {
+      "slug": "datasets",
+      "name": "数据集与基准",
+      "group": "genre",
+      "tags": ["数据集/基准"],
+      "definition": "新数据集、新评测基准与榜单变化：数据从哪来、怎么标注、谁在榜上、榜单本身可信吗。"
+    },
+    {
+      "slug": "tools",
+      "name": "工具与平台",
+      "group": "genre",
+      "tags": ["工具/平台", "开源/代码"],
+      "definition": "能直接用的东西：开源库、软件平台、SaaS 与模型服务，以及大版本更新与授权条款变化。"
+    },
+    {
+      "slug": "clinical-readouts",
+      "name": "临床读出",
+      "group": "genre",
+      "tags": ["临床进展"],
+      "definition": "AI 参与研发的分子与疗法在临床上的结果：入组、读出、失败终止、安全性与审批结果。"
+    },
+    {
+      "slug": "approvals",
+      "name": "审批与监管",
+      "group": "genre",
+      "tags": ["审批/监管"],
+      "definition": "监管机构对药物和 AI 医疗器械的动作：指南与征求意见稿、审批决定、路径变化与合规要求。"
+    },
+    {
+      "slug": "deals",
+      "name": "交易与融资",
+      "group": "genre",
+      "tags": ["交易/融资"],
+      "definition": "钱怎么流动：BD 授权与首付里程碑、融资轮次、并购、IPO，以及 MNC 与 AI 公司的合作条款。"
+    },
+    {
+      "slug": "industry-news",
+      "name": "产业动态",
+      "group": "genre",
+      "tags": ["产业动态"],
+      "definition": "行业怎么运转：产能、裁员、财报、市场数据、区域集群与会议，以及公司战略调整。"
+    },
+    {
+      "slug": "opinions",
+      "name": "观点与分析",
+      "group": "genre",
+      "tags": ["观点/评论"],
+      "definition": "从业者在想什么：创始人访谈、研究者论战、投资人与咨询机构的判断，以及对行业报告的不同解读。"
+    },
+    {
+      "slug": "tutorials",
+      "name": "教程与解读",
+      "group": "genre",
+      "tags": ["教程/解读"],
+      "definition": "拿来就能用的内容：工具怎么用、流程怎么搭、论文怎么读，以及踩过的坑。"
+    }
+  ]
+}

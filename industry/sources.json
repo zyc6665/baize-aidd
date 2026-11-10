@@ -1,0 +1,576 @@
+{
+  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。这里的源都在 2026-11 实测可用（返回 200 且有条目）；Fierce、GEN、BioSpace、NMPA、CDE、EMA、ChemRxiv、arXiv 的 rss 都拿不到，不要直接加回来。",
+  "sources": [
+    {
+      "id": "rss-biorxiv",
+      "name": "bioRxiv 全部",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://connect.biorxiv.org/biorxiv_xml.php?subject=all",
+        "_aihot": {
+          "initialBackfillLimit": 12
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "预印本"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-biotech",
+      "name": "Nature Biotechnology",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/nbt.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-machintell",
+      "name": "Nature Machine Intelligence",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/natmachintell.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-nrd",
+      "name": "Nature Reviews Drug Discovery",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/nrd.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-methods",
+      "name": "Nature Methods",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/nmeth.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-npj-drug-discovery",
+      "name": "npj Drug Discovery",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/npjdrugdiscov.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature",
+      "name": "Nature",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/nature.rss",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-science-news",
+      "name": "Science News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.science.org/rss/news_current.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-broad",
+      "name": "Broad Institute",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.broadinstitute.org/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "机构"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cz-biohub",
+      "name": "Chan Zuckerberg Biohub",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://biohub.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "机构"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-deepmind",
+      "name": "Google DeepMind",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://deepmind.google/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "google",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nvidia-genai",
+      "name": "NVIDIA 生成式 AI 博客",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blogs.nvidia.com/blog/category/generative-ai/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "nvidia",
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方",
+        "厂商"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-fda-press",
+      "name": "FDA 新闻稿",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "监管"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-stat",
+      "name": "STAT News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.statnews.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-endpoints",
+      "name": "Endpoints News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://endpts.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-biopharmadive",
+      "name": "BioPharma Dive",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.biopharmadive.com/feeds/news/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-pharmavoice",
+      "name": "PharmaVoice",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.pharmavoice.com/feeds/news/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-labiotech",
+      "name": "Labiotech",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.labiotech.eu/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-mit-news-ai",
+      "name": "MIT News · AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://news.mit.edu/rss/topic/artificial-intelligence2",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "机构"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-drugtimes",
+      "name": "药时代 DrugTimes",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.drugtimes.cn/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中文",
+        "媒体"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-cnpharm-newdrug",
+      "name": "中国食品药品网 · 新药研发",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.cnpharm.com/yp/xyyf/",
+        "parseMode": "html",
+        "itemSelector": "a[href^=\"/c/20\"]",
+        "publishedAtRegex": "(20\\d{2}-\\d{2}-\\d{2})",
+        "allowUrlPrefixes": [
+          "https://www.cnpharm.com/c/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 12
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "中文",
+        "官方"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-bioon-news",
+      "name": "生物谷资讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://news.bioon.com/",
+        "parseMode": "html",
+        "itemSelector": ".item",
+        "linkSelector": ".item-content h2 a",
+        "titleSelector": ".item-content h2 a",
+        "publishedAtSelector": ".item-meta-item",
+        "allowUrlPrefixes": [
+          "http://news.bioon.com/article/",
+          "https://news.bioon.com/article/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "中文",
+        "媒体"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-yaozh-news",
+      "name": "药智网新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://news.yaozh.com/",
+        "parseMode": "html",
+        "itemSelector": ".zjltoutiao",
+        "linkSelector": "a",
+        "titleSelector": ".zjltoutiao_tit",
+        "publishedAtSelector": ".zjltoutiao_info .fr",
+        "allowUrlPrefixes": [
+          "https://news.yaozh.com/archive/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "中文",
+        "媒体"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-medrxiv",
+      "name": "medRxiv 全部",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://connect.medrxiv.org/medrxiv_xml.php?subject=all",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "预印本",
+        "临床"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-npj-digital-med",
+      "name": "npj Digital Medicine",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/npjdigitalmed.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-msr",
+      "name": "Microsoft Research 博客",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.microsoft.com/en-us/research/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "microsoft",
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "官方",
+        "研究"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-owlposting",
+      "name": "Owl Posting",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.owlposting.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 4
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "个人",
+        "计算生物学"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    }
+  ]
+}
