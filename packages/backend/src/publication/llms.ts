@@ -80,6 +80,7 @@ export function llmsTxt(opts: {
   lines.push(`- [公开 API · 最近资讯](${u("/api/v1/items")}): JSON，支持 mode=selected/all、window=24h/7d、by=timeline/published（时间口径：默认与网页一致的时间轴，对账原文发布时间用 published）、category、q、limit 与 cursor`);
   lines.push(`- [公开 API · 当前热点](${u("/api/v1/hot-topics")}): 热点榜 Top 10；每条含从 1 开始的 rank，不返回热度值，links.story 指向事件页`);
   lines.push(`- [公开 API · 事件详情](${u("/api/v1/stories/{publicId}")}): 事件报道时间线 + 随演化更新的 AI 综述；publicId 只来自 hot-topics 的 links.story 或事件间引用，不要猜测`);
+  lines.push(`- [公开 API · 结构化台账](${u("/api/v1/tables/{kind}")}): kind 取 deals（交易：类型、交易方、资产、首付与总额）、readouts（临床读出：药物、靶点、适应症、期次、样本量、结果、终点）、models（模型卡：任务、基准、权重）；每条都带原文写明的卡片字段，没写就是 null；支持 page、limit、filter`);
   lines.push(...opts.modules.api);
   if (opts.hasDailies) {
     lines.push(`- [公开 API · 最新日报](${u("/api/v1/dailies/latest")}): 最新一期结构化日报`);
@@ -112,6 +113,7 @@ export function llmsTxt(opts: {
   lines.push(`- [首页 · 精选](${u("/")}): ${subjectAfter("每日", "精选动态")}`);
   lines.push(`- [${withSubject("热点榜")}](${u("/hot")}): 过去 48 小时内被多个独立信源${subjectAfter("共同讨论的", "事件")}；可进入事件页查看最新进展、热度变化、报道时间线和 AI 综述`);
   lines.push(`- [全部动态](${u("/all")}): ${subjectAfter("全量", "资讯流")}，可按分类筛选`);
+  lines.push(`- [结构化台账](${u("/deals")}): 三张表——[交易台账](${u("/deals")})、[临床读出](${u("/readouts")})、[模型卡](${u("/model-cards")})；只收原文写明的要素（金额、期次、样本量、基准），没有就留空`);
   if (opts.hasDailies) {
     lines.push(`- [${withSubject("日报")}](${u("/daily")}): ${subjectAfter("每日", "行业精编汇总")}`);
     lines.push(`- [日报存档](${u("/daily/archive")}): ${subjectAfter("历史", "日报归档")}`);
