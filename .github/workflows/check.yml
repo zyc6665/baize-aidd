@@ -65,6 +65,9 @@ jobs:
           /usr/lib/postgresql/17/bin/pg_restore --version
       - name: Typecheck
         run: npm run typecheck
+      # 门槛校准的样本先过格式检查：样本坏了，花在评分上的钱就白花了。
+      - name: Gold set
+        run: npm run check:gold
       - name: Build web
         run: npm run build -w @aihot/web
       - name: Browser test engines
