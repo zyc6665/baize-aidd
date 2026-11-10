@@ -15,7 +15,7 @@ import { sql } from "../db.ts";
 import { shared } from "../lib/cache.ts";
 import { escapeXml } from "../lib/text.ts";
 import { siteUrl } from "./links.ts";
-import { evidenceCondition, listedCondition, selectedCondition, storyReportCondition } from "./scope.ts";
+import { browsedCondition, compositeCondition, evidenceCondition, listedCondition, selectedCondition, storyReportCondition } from "./scope.ts";
 import { storyTexts } from "./story-text.ts";
 import { topicPageCounts } from "./topics.ts";
 import { serverModules, type SitemapEntry } from "../modules.ts";
@@ -78,6 +78,19 @@ export async function loadDiscoveryEntries(at = new Date(), limits?: { urls: num
     { loc: "/privacy", revision: sha256(stableJson([POLICY.privacy, await readFile(path.join(REPO_ROOT, "site/pages/privacy.md"), "utf8")])), changefreq: "monthly", priority: 0.4 },
     { loc: "/changelog", revision: sha256(stableJson(loadChangelog())), changefreq: "weekly", priority: 0.5 },
   );
+  // The three structured tables. Their pages change when a card enters or leaves, so the count and the
+  // newest card date stand in for a revision.
+  const [cards] = await sql<{ deals: string; readouts: string; models: string; at: Date | null }[]>`
+    SELECT count(*) FILTER (WHERE a.output ? 'deal')::text AS deals,
+           count(*) FILTER (WHERE a.output ? 'readout')::text AS readouts,
+           count(*) FILTER (WHERE a.output ? 'modelCard')::text AS models,
+           max(p.published_at) AS at
+    FROM publications p JOIN analyses a ON a.id = p.analysis_id
+    WHERE ${browsedCondition(at)} AND NOT ${compositeCondition()}`;
+  const tableRevision = sha256(stableJson([cards?.deals, cards?.readouts, cards?.models, cards?.at?.toISOString() ?? null]));
+  if (cards && Number(cards.deals) > 0) entries.push({ loc: "/deals", revision: tableRevision, changefreq: "daily", priority: 0.6 });
+  if (cards && Number(cards.readouts) > 0) entries.push({ loc: "/readouts", revision: tableRevision, changefreq: "daily", priority: 0.6 });
+  if (cards && Number(cards.models) > 0) entries.push({ loc: "/model-cards", revision: tableRevision, changefreq: "daily", priority: 0.6 });
   for (const r of reports) entries.push({ loc: `/${r.kind}/${r.key}`, lastmod: r.t, newsAt: r.changed, revision: r.revision, changefreq: "monthly", priority: 0.6 });
   for (const t of topics) {
     if (!t.indexable) continue;

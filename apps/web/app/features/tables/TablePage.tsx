@@ -215,6 +215,18 @@ export function TableView({ kind, data }: { kind: TableKind; data: TableResponse
         <h1 className="mt-1 text-[26px] font-semibold text-ink">{copy.title}</h1>
         <p className="mt-2 max-w-[70ch] text-[14px] leading-6 text-ink-3">{copy.lead}</p>
       </header>
+      {/* 三张台账互相跳转：读一次读出的人，常常接着要看这笔交易的条款。 */}
+      <div className="mb-3 flex flex-wrap gap-2 text-[13px]">
+        {(Object.keys(COPY) as TableKind[]).map((k) => (
+          <Link
+            key={k}
+            to={COPY[k].path}
+            className={`rounded-full border px-3 py-1 ${k === kind ? "border-accent bg-accent-soft text-accent-ink" : "border-line text-ink-3 hover:text-ink"}`}
+          >
+            {COPY[k].title}
+          </Link>
+        ))}
+      </div>
       {filters(kind, active)}
       {data.items.length === 0 ? (
         <EmptyState title="还没有可入账的记录">台账只收原文写明确切要素的报告；随着新内容被分析，这里会自动长出来。</EmptyState>
