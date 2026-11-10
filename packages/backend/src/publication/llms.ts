@@ -114,6 +114,7 @@ export function llmsTxt(opts: {
   lines.push(`- [${withSubject("热点榜")}](${u("/hot")}): 过去 48 小时内被多个独立信源${subjectAfter("共同讨论的", "事件")}；可进入事件页查看最新进展、热度变化、报道时间线和 AI 综述`);
   lines.push(`- [全部动态](${u("/all")}): ${subjectAfter("全量", "资讯流")}，可按分类筛选`);
   lines.push(`- [结构化台账](${u("/deals")}): 三张表——[交易台账](${u("/deals")})、[临床读出](${u("/readouts")})、[模型卡](${u("/model-cards")})；只收原文写明的要素（金额、期次、样本量、基准），没有就留空`);
+  lines.push(`- [靶点索引](${u("/targets")}): 按靶点汇总临床读出（药物、适应症、期次、样本量、终点）；[药物索引](${u("/drugs")})按药物代号或商品名汇总。名字来自原文，同一实体的不同写法合并成一页`);
   if (opts.hasDailies) {
     lines.push(`- [${withSubject("日报")}](${u("/daily")}): ${subjectAfter("每日", "行业精编汇总")}`);
     lines.push(`- [日报存档](${u("/daily/archive")}): ${subjectAfter("历史", "日报归档")}`);

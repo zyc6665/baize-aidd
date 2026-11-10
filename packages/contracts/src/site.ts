@@ -1,4 +1,4 @@
-// First-party site API (/api/site/*). Not a public API: it may evolve with the website,
+﻿// First-party site API (/api/site/*). Not a public API: it may evolve with the website,
 // but it is served from the same public read layer as v1, RSS and MCP.
 import type { MentionTarget } from "./mentions.ts";
 import type { CategoryKey, ChannelKey } from "./taxonomy.ts";
@@ -596,4 +596,26 @@ export interface TableResponse {
   page: number;
   pageCount: number;
   total: number;
+}
+/** 靶点页与药物页：实体来自结构化卡片的 target / drug 字段，不是另建的表。 */
+export type EntityKind = "targets" | "drugs";
+
+export interface EntitySummary {
+  slug: string;
+  name: string;
+  /** 提到它的临床读出条数。 */
+  readouts: number;
+}
+
+export interface EntityListResponse {
+  kind: EntityKind;
+  items: EntitySummary[];
+}
+
+export interface EntityPageResponse {
+  kind: EntityKind;
+  slug: string;
+  name: string;
+  readouts: TableRow[];
+  deals: TableRow[];
 }

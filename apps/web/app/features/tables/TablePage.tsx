@@ -170,13 +170,13 @@ function ModelCells({ card }: { card: ModelCard }) {
   );
 }
 
-const HEAD: Record<TableKind, string[]> = {
+export const HEAD: Record<TableKind, string[]> = {
   deals: ["类型", "交易方", "资产 / 技术", "首付", "总额"],
   readouts: ["药物 / 靶点", "适应症", "期次", "样本量", "结果", "关键终点"],
   models: ["模型", "任务", "基准", "权重"],
 };
 
-function Row({ kind, row }: { kind: TableKind; row: TableRow }) {
+export function Row({ kind, row }: { kind: TableKind; row: TableRow }) {
   const card = row.card;
   return (
     <tr className="border-t border-line-soft align-top hover:bg-bg-sunk">
@@ -224,6 +224,12 @@ export function TableView({ kind, data }: { kind: TableKind; data: TableResponse
             className={`rounded-full border px-3 py-1 ${k === kind ? "border-accent bg-accent-soft text-accent-ink" : "border-line text-ink-3 hover:text-ink"}`}
           >
             {COPY[k].title}
+          </Link>
+        ))}
+        <span className="mx-1 self-center text-ink-4">·</span>
+        {([["/targets", "靶点"], ["/drugs", "药物"]] as const).map(([to, label]) => (
+          <Link key={to} to={to} className="rounded-full border border-line px-3 py-1 text-ink-3 hover:text-ink">
+            {label}
           </Link>
         ))}
       </div>

@@ -8,6 +8,7 @@ import { exportMarkdown, loadItemDetail } from "@aihot/backend/publication/detai
 import { itemUrl } from "@aihot/backend/publication/links";
 import { loadPool, SearchBusyError } from "@aihot/backend/publication/pool";
 import { loadTable } from "@aihot/backend/publication/structured";
+import { ENTITY_KINDS, listEntities, loadEntity } from "@aihot/backend/publication/entities";
 import { loadTimeline } from "@aihot/backend/publication/timeline";
 import { loadStoryFollowups } from "@aihot/backend/publication/followups";
 import { loadGroupReports } from "@aihot/backend/publication/groups";
@@ -94,6 +95,20 @@ export function registerSite(app: FastifyInstance) {
     const filter = q.filter?.trim().slice(0, 40) || null;
     const data = await loadTable(kind, { page, filter });
     return sendJsonWithEtag(req, reply, data, { etagPrefix: `table-${kind}`, cacheControl: "public, max-age=120, s-maxage=120" });
+  }));
+
+  app.get("/api/site/entities/:kind", siteHandler(async (req, reply) => {
+    const kind = (req.params as { kind: string }).kind;
+    if (!ENTITY_KINDS.includes(kind as never)) return sendProblem(req, reply, { status: 404, code: "not_found", detail: "unknown entity kind" });
+    return sendJsonWithEtag(req, reply, await listEntities(kind as never), { etagPrefix: `entities-${kind}`, cacheControl: "public, max-age=300, s-maxage=300" });
+  }));
+
+  app.get("/api/site/entities/:kind/:slug", siteHandler(async (req, reply) => {
+    const { kind, slug } = req.params as { kind: string; slug: string };
+    if (!ENTITY_KINDS.includes(kind as never)) return sendProblem(req, reply, { status: 404, code: "not_found", detail: "unknown entity kind" });
+    const page = await loadEntity(kind as never, slug);
+    if (!page) return sendProblem(req, reply, { status: 404, code: "not_found", detail: "no public readout names this entity", cacheControl: "public, max-age=60" });
+    return sendJsonWithEtag(req, reply, page, { etagPrefix: `entity-${kind}-${slug}`, cacheControl: "public, max-age=300, s-maxage=300" });
   }));
 
   app.get("/api/site/items/:id", siteHandler(async (req, reply) => {

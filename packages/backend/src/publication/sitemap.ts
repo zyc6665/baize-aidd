@@ -9,6 +9,7 @@ import { ABOUT, ACCESS, AGENT, POLICY, SITE } from "@aihot/site";
 import { config, REPO_ROOT } from "../config.ts";
 import { sha256, stableJson } from "../lib/ids.ts";
 import { loadChangelog } from "../site/meta.ts";
+import { listEntities } from "./entities.ts";
 import { latestHotRanking } from "./hot.ts";
 import { eventPageCondition, ITEM_FROM, thinPageCondition } from "./items.ts";
 import { sql } from "../db.ts";
@@ -91,6 +92,16 @@ export async function loadDiscoveryEntries(at = new Date(), limits?: { urls: num
   if (cards && Number(cards.deals) > 0) entries.push({ loc: "/deals", revision: tableRevision, changefreq: "daily", priority: 0.6 });
   if (cards && Number(cards.readouts) > 0) entries.push({ loc: "/readouts", revision: tableRevision, changefreq: "daily", priority: 0.6 });
   if (cards && Number(cards.models) > 0) entries.push({ loc: "/model-cards", revision: tableRevision, changefreq: "daily", priority: 0.6 });
+  // 靶点 / 药物：索引页与每个实体的页面。实体来自卡片里点名的名字，条目少而变动快，所以 revision 取
+  // 名字与条数，够让通知区分“又多了一条读出”和“什么都没变”。
+  const [targets, drugs] = await Promise.all([listEntities("targets", at), listEntities("drugs", at)]);
+  for (const [path, list] of [["/targets", targets], ["/drugs", drugs]] as const) {
+    if (list.items.length === 0) continue;
+    entries.push({ loc: path, revision: sha256(stableJson(list.items)), changefreq: "daily", priority: 0.5 });
+    for (const item of list.items) {
+      entries.push({ loc: `${path}/${item.slug}`, revision: sha256(stableJson(item)), changefreq: "daily", priority: 0.4 });
+    }
+  }
   for (const r of reports) entries.push({ loc: `/${r.kind}/${r.key}`, lastmod: r.t, newsAt: r.changed, revision: r.revision, changefreq: "monthly", priority: 0.6 });
   for (const t of topics) {
     if (!t.indexable) continue;
