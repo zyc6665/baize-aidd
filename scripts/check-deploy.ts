@@ -56,6 +56,18 @@ const items: Item[] = [
   },
   {
     blocking: false,
+    label: "读者订阅的邮件出口配了（MAIL_API_URL / MAIL_API_KEY / MAIL_FROM）",
+    ok: Boolean(config.mailApiUrl && config.mailApiKey && config.mailFrom),
+    hint: "没配时 /subscribe 照常收邮箱，但信只写进容器的 /data/mail/，读者收不到；先在邮件服务商开一个发信域名，再填这三项。",
+  },
+  {
+    blocking: false,
+    label: "搜索收录开着（INDEXNOW_SUBMIT_ENABLED 或 BAIDU_PUSH_ENABLED）",
+    ok: config.indexNowSubmitEnabled || config.baiduPushEnabled,
+    hint: "两个都关着，sitemap 生成了也没人来看；先跑 node scripts/seo.ts 生成 IndexNow key，确认 <SITE_URL>/<key>.txt 能打开，再加 --enable。",
+  },
+  {
+    blocking: false,
     label: "生产必填凭据清单（DEPLOYMENT.requiredSecrets）",
     ok: true,
     hint: DEPLOYMENT.requiredSecrets.length === 0 ? "当前为空：API 启动时只检查会话、图片签名和管理员登录。" : `API 启动时会额外检查：${DEPLOYMENT.requiredSecrets.join("、")}。`,

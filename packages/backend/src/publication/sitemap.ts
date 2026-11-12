@@ -78,6 +78,7 @@ export async function loadDiscoveryEntries(at = new Date(), limits?: { urls: num
     { loc: "/terms", revision: sha256(stableJson([POLICY.terms, await readFile(path.join(REPO_ROOT, "site/pages/terms.md"), "utf8")])), changefreq: "monthly", priority: 0.4 },
     { loc: "/privacy", revision: sha256(stableJson([POLICY.privacy, await readFile(path.join(REPO_ROOT, "site/pages/privacy.md"), "utf8")])), changefreq: "monthly", priority: 0.4 },
     { loc: "/changelog", revision: sha256(stableJson(loadChangelog())), changefreq: "weekly", priority: 0.5 },
+    { loc: "/subscribe", revision: sha256(stableJson([SITE.name, SITE.description])), changefreq: "monthly", priority: 0.4 },
   );
   // The three structured tables. Their pages change when a card enters or leaves, so the count and the
   // newest card date stand in for a revision.

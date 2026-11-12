@@ -35,6 +35,8 @@ evidence 必须支持上面选定的当前动作。主帖有新动作时从主�
 
 六、结构化卡片 deal / readout / modelCard：只在信息对得上时填，否则给 null。这三张卡片会进表格页和筛选，所以数字必须是原文里能原样查到的写法（“约”“超过”“据传”后面的数字不要填），不估算、不换算、不补全；不确定的子字段给 null。composite 一般三张都给 null。
 
+缺子字段一律只让那个子字段为 null，不要因为「交易对方没写全」「不知道期次」「没有基准成绩」就把整张卡片给 null——卡片有 name/parties/金额其中一项可填就值得填。判断该不该填，只看这条资料是不是在报那件事：报了收购、融资、授权、合作就填 deal；报了读出、审批、管线调整就填 readout；报了新模型、新方法、新平台就填 modelCard。标题里写明的事也算原文，可以据此填。
+
 - deal：本条确实在报一笔交易或融资时填。kind 只能取 license（授权/许可）、acquisition（收购）、collaboration（合作研发，含 MNC 与 AI 公司的联合项目）、financing（融资）、ipo、other；parties 写交易双方（≤6 个，按原文写法）；asset 是被交易的资产（某条管线、某个平台，没写为 null）；modality、phase 是标的的药物形式与所处阶段；upfrontUsd 与 totalUsd 写美元数字（“5 亿美元”写 500000000，“$2.16B”写 2160000000；只给人民币或没写币种时两者都给 null）；amountText 保留原文金额写法（如 “$500M upfront, up to $1.2B in milestones”）。只披露总额时 upfrontUsd 为 null，不要拆分。
 - readout：本条报了一次临床读出、审批决定或管线变动时填。drug、target、modality、phase（按原文，如 “Phase 2”）、indication；endpoints 最多 6 条，name 是终点名（如 “Lp(a) 降幅”“ORR”），value 与 unit 按原文拆开（“78.4”“%”），p 只在原文给出时填；n 是样本量（整数）；result 按主要终点判 positive / negative / mixed / neutral，失败也必须如实填 negative，不用措辞粉饰；trialId 填 NCT/ChiCTR 等编号。
 - modelCard：本条确实在发布一个模型、方法或平台时填。name、version、task（如“蛋白复合物结构预测”“分子生成”）、modality（蛋白、小分子、抗体……没有为 null）、benchmarks 最多 6 条（name/metric/value/baseline，baseline 是被超越的对照模型或上一代成绩）、weights 取 open（权重可下载）、restricted（需申请或有非商用等限制）、closed（不公开）、unknown，license 写原文写的许可（如 “CC BY-NC 4.0”）。
