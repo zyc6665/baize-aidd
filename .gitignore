@@ -17,5 +17,11 @@ fontsource-noto-sans-sc-*.tgz
 
 .pwinstall.log
 
-# ±¾µØÁÙÊ±½Å±¾£¨²»×öÉó¼ÆÓÃ£©
+# æœ¬åœ°ä¸´æ—¶è„šæœ¬ï¼ˆä¸åšå®¡è®¡ç”¨ï¼‰
 _probe/
+
+.testlog*.txt
+.baselog*.txt
+.sub*.txt
+.cookie*.txt
+.web*.txt
