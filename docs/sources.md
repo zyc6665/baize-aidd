@@ -90,6 +90,7 @@
 导入与修改：
 
 - 本地 `node --env-file=.env scripts/seed.ts`，容器 `docker compose exec -T api node scripts/seed.ts`。它只**补新源**：`ON CONFLICT (id) DO NOTHING`，已经入库的行一个字段都不改，后台改过的也不会被覆盖。
+- **容器里的 `industry/sources.json` 是构建时拷进去的**。改完清单不重建就 seed，读到的是旧清单（新增的源会按默认 60 分钟入库，看起来像间隔没生效）。正确顺序：改清单 → `docker compose build api worker && docker compose up -d` → `seed.ts` → `retune.ts`。
 - 所以改已有源要去后台改；只改抓取间隔时，改清单后跑 `node --env-file=.env scripts/retune.ts --dry` 看差异，再去掉 `--dry` 写库。retune 只同步 `interval_minutes`，tier、config、开关一概不碰；清单里还没入库的源会列出来，提示你用 seed 新建。
 
 ## 抓取间隔怎么分层
