@@ -1,128 +1,150 @@
-# 把它改成你的行业
+# 改这个站
 
-这份仓库默认是一个“AI 行业”的示例站：示范信源是一批公开的 AI 资讯源，精选口味是 AIHOT 在 AI 领域调了很久的那一套。要把它变成“法律热点”“HR 热点”“黄金热点”，要改的东西几乎都在 [`site/`](../site/)（这个站自己的名字、文案、品牌和页面）和 [`industry/`](../industry/)（行业的分类、信源、提示词和门槛）这两个文件夹里，代码基本不用动。
+白泽智药是 AIDD（AI 药物研发）的行业热点站：盯新模型与新方法、工具平台、临床与管线、交易与资本、政策与监管、产业与生态、观点分析这七类消息，里面有模型卡、交易与临床读出三张台账，以及从读出里长出来的靶点页和药物页。
 
-如果你用 Claude Code、Codex 这类 Agent，可以把下面这段直接发给它，然后回答它的问题：
+要改它，只有两处要动：`site/` 是这个站自己的身份（站名、文案、每一步的模型、品牌、条款页），`industry/` 是行业知识（分类、主题、信源、别名、提示词、门槛、校准样本）。`apps/` 和 `packages/` 是引擎，换行业不该碰；引擎里确实没有的功能，按 [架构](architecture.md#模块) 的“模块”做，别改共享代码。
 
-```text
-请读 AGENTS.md 和 docs/customize.md，把这个站改成「XX 行业」的热点站。
-我关心的是：……（写你想盯的信源、你觉得什么消息重要、什么不重要，越具体越好）。
-改完帮我跑 npm run typecheck、npm test 和 node scripts/smoke.ts，并告诉我还需要我自己决定哪些事。
-```
+这份文档写给之后接手的人：一件事落在哪个文件，哪几个 key 上线后不能动，改门槛为什么必须先校准。
 
-下面是它（或者你）要做的事，按顺序。
+| 想改什么 | 落在哪 |
+|---|---|
+| 站名、简介、标题、页脚 | `site/site.ts` |
+| 出刊时间、导航、限流说明 | `site/site.ts` 的 `EDITION_TIMES`、`NAV`、`ACCESS` |
+| 每一步用哪个模型 | `site/models.ts` 与环境变量 |
+| 分类、标签、公司名录 | `industry/taxonomy.ts` |
+| 主题页（`/topics`） | `industry/topics.json` |
+| 信源 | `industry/sources.json`，上线后用后台“信源”页 |
+| 靶点、药物的同义写法 | `industry/aliases.json` |
+| 预筛、评分、写作、归组、结构抽取 | `industry/prompts/` |
+| 入选门槛 | `industry/selection.ts` |
+| 门槛校准用的样本 | `industry/gold.jsonl` |
+| Logo、图标、报头字、二维码 | `site/brand/` |
+| 条款、隐私 | `site/pages/` |
+| 站点根目录的固定文件 | `site/public/` |
+| 更新日志 | `site/changelog.json` |
 
 ## 1. 站名和文案：`site/site.ts`
 
-[`site/site.ts`](../site/site.ts) 的每个导出项和字段旁边都写了直接注释（用在哪里、能不能留空、默认值什么意思），从上往下按注释改即可；改完重新构建（`docker compose up -d --build`）前后端一起生效。跨文件或上线后要注意的只有这几条：
+每个导出项旁边都有注释（用在哪里、能不能留空、默认值什么意思），从上往下按注释改。跨文件或上线后要注意的只有这几条：
 
-- **站点地址不在 `site.ts` 里**：部署时用环境变量 `SITE_URL` 设置（`SITE.defaultUrl` 只是没设 `SITE_URL` 时的本地兜底）。
-- **一起改的名字**：改 `SITE.name` 时顺手把 `SITE.organization.name`（给搜索引擎看的结构化数据）一起改掉；`SITE.crawlerName` 写你自己的抓取标识，别冒用别人的站名。
-- **上线或有人接入后不要再改的标识**：`SITE.mcpPrefix`（MCP 工具名前缀）、`PUBLIC_CATEGORIES`（公开接口与订阅源的类别合并和改名）、`ABOUT.termsAnchor`（外部写死过的锚点）；`SITE.interfaceVersion` 只升不降，改了已有公开字段或含义时升主版本。
-- **出刊时间写整点或半点**：`EDITION_TIMES`（北京时间 `HH:mm`）由每半小时一次的排程检查，日报窗口、缺期告警和各处时间文案都读它。
-- **导航隐藏的范围**：`NAV.hidden` 目前只开放 `"/hot"` 和 `"/topics"`（一并处理侧栏、底栏、“我的”页、返回链接、面包屑，以及隐藏 `"/hot"` 时的首页热点条和事件页名次；直接打开地址仍能访问）。
+- **站点地址不在 `site.ts` 里**：部署时用环境变量 `SITE_URL` 设置；`SITE.defaultUrl`（现在是 `https://cpumodel.online`）只是没设 `SITE_URL` 时的兜底。
+- **一起改的名字**：改 `SITE.name` 时顺手改 `SITE.organization.name`（结构化数据里的机构名）；`SITE.crawlerName`（现在是 `BaizeBot/1.0`）是抓取标识，别冒用别人的站名。
+- **版权与页脚**：`ABOUT.copyright`（版权与下架说明）、`SITE.footerNote`、`SITE.contactEmail` 按站主的意见定；现有文案里提到框架名的地方按 `AGENTS.md` 的约定一并处理，本站不冠框架的名字和 Logo。
+- **写死了行业说法的地方**：`SEO_TITLES` 里写的是“AI 药物研发每日要闻”“一周 AIDD 要闻回顾”“月度 AIDD 盘点”，`FEED_COPY.allLeavesOut` 写的是“与 AI 药物研发和生物医药产业都无关的通用科技新闻”。改站的主题时这两处要跟着改，否则标题和订阅说明会跟内容对不上。
+- **中英文之间的空格**：站名和主题里都是英文缩写（`AIDD`），`withSubject()`、`subjectAfter()` 负责拼接标题时补空格并处理英文词前后的空白，改标题模板时别绕过它们。
+- **上线或有人接入后不要再改的标识**：`SITE.mcpPrefix`（现在是 `baize`，MCP 工具名是 `baize_get_latest`、`baize_search` 这类，改了等于换一套工具）、`PUBLIC_CATEGORIES`（公开接口与分类 RSS 的类别合并和改名，参数里有 key）、`ABOUT.termsAnchor`（外部可能引用过的锚点）。`SITE.interfaceVersion` 只升不降，改公开字段或含义时升主版本。
+- **出刊时间写整点或半点**：`EDITION_TIMES`（北京时间，现在是日报 08:00、周报 10:00、月报 10:30）由每半小时一次的排程检查，日报窗口、缺期告警和各处时间文案都读它。
+- **导航隐藏的范围有限**：`NAV.hidden` 只开放 `"/hot"` 和 `"/topics"`，页面本身照样能打开；隐藏 `/hot` 时首页的热点条一起去掉。
 - **限流说明与实际一致**：前面的反向代理真的按 IP 限流了，再填 `ACCESS.ratePerMinute`。
 
-## 2. 分类、标签和主题：`industry/taxonomy.ts`、`industry/topics.json`
+## 2. 分类、标签、主题、别名
 
-[`industry/taxonomy.ts`](../industry/taxonomy.ts) 定义类别（`CATEGORIES`）、报头重点发布计数（`RELEASE`）、总述免核对通用词（`PLAIN_TERMS`）、内容类型（`ITEM_TYPES`）、标签词表与近义词（`CATEGORY_TAGS`、`TOPIC_TAGS`、`ENTITY_TAGS`、`TAG_SYNONYMS`），以及公司名录和防张冠李戴词典（`ENTITIES`、`IDENTITY_LEXICON`、`PUBLISHER_DOMAINS`、`IDENTITY_CONTEXT_ALIASES`）。各字段含义直接看文件内注释，改动时注意这几处联动：
+`industry/taxonomy.ts` 定义七类（`CATEGORIES`：`models` 模型与方法、`tools` 工具与平台、`clinical` 临床与管线、`deals` 交易与资本、`policy` 政策与监管、`industry` 产业与生态、`opinion` 观点与分析）、报头计数（`RELEASE`：`models` 上的“模型发布 / 项新方法”）、英文缩写免核对词（`PLAIN_TERMS`，如 `fda`、`ind`、`adc`、`glp-1`，这些词出现在标题里不算“原文没提”）、内容类型（`ITEM_TYPES`）、标签词表与近义词、公司名录与防张冠李戴词典。
 
-- **网址里的 `key` 上线后不改**：`CATEGORIES` 的 `key` 会进网址和订阅地址（`/all?category=`、`/feed/category/<key>.xml`）。要让某一类在公开接口、RSS 和 MCP 里并进另一类发布（网页上仍分开），在 `site/site.ts` 的 `PUBLIC_CATEGORIES` 里配。
-- **和提示词同步**：改了 `CATEGORIES`、标签词表或 `ITEM_TYPES`，要同步改 `industry/prompts/structure.md`（归类原则与标签规则）、`content-understanding.md`（内容类型枚举）和 `selection-score.md`（各内容类型的五维权重表）。
-- **不需要防张冠李戴时可清空**：`IDENTITY_LEXICON`、`PUBLISHER_DOMAINS`、`IDENTITY_CONTEXT_ALIASES` 用来保证标题摘要里提到的公司在原文里出现过；你的行业不需要这项检查时设为空数组 `[]`。
-- **`industry/topics.json`**（主题目录 `/topics`）：站点启动时读取，改完重新构建（`docker compose up -d --build`）生效。分 `company`（公司与机构）、`field`（方向）、`genre`（内容形态）三组，`slug` 上线后不要改：
-  - `company` 主题用 `entityId`（`ENTITIES` 的 id）收以这家公司为主体的报道；一篇报道的主体有几家公司时，标题里点了它的名才算。可选 `aliases`：搜索框里只搜这个词，也能找出这家公司的报道。
-  - `field` 和 `genre` 主题用 `tags` 收打了这些标签的报道。
+- **`CATEGORIES` 的 key 上线后不改**：它进网址和订阅地址（`/all?category=clinical`、`/feed/category/clinical.xml`）。要让某一类在公开接口和 RSS 里并进另一类（网页上仍分开），配 `site/site.ts` 的 `PUBLIC_CATEGORIES`。
+- **改分类或标签必须同步三份提示词**：`industry/prompts/structure.md`（归类原则、标签规则、三张结构化卡的判定）、`content-understanding.md`（内容类型枚举）、`selection-score.md`（各内容类型的五维权重表）。只改 `taxonomy.ts`，模型会按旧规则往新类别里塞东西。
+- **不需要防张冠李戴时可以清空**：`IDENTITY_LEXICON`、`PUBLISHER_DOMAINS`、`IDENTITY_CONTEXT_ALIASES` 保证标题摘要里提到的公司在原文里出现过；不想要这项检查就设成空数组。
+- **`industry/topics.json`**（主题页 `/topics`）分 `company`（公司与平台）、`field`（技术方向）、`genre`（内容形态）三组，站点启动时读取，改完重新构建生效。`slug` 上线后不要改（进网址）。`company` 用 `entityId` 收以这家公司为主体的报道，可写 `aliases` 让搜索也能找到；`field` 和 `genre` 用 `tags`。
+- **`industry/aliases.json`**（靶点与药物的同义写法，现在 17 组靶点、16 组药物）：`name` 是页面上显示的标准名，`aliases` 是原文里的写法（大小写、连字符、括号、商品名与通用名）。匹配前按字母数字归一，`KRAS G12C`、`KRAS(G12C)`、`KRAS G12C 突变` 是同一页；没列进来的名字靠“字母互相包含”自动归并，但 `KRAS G12D` 会被并进 `KRAS`——要单独成页就得写进这张表。加条目只影响实体页，不改动已入库的分析结果。
 
 ## 3. 信源：`industry/sources.json`
 
-这是首次启动时导入的示范信源，已经存在的不会被覆盖；之后每次启动只补上文件里有、库里还没有的，从文件里删掉的不会从库里删（不要的在后台暂停）。上线后更常用的是后台“信源”页：能新建、试抓、调频率、暂停、看失败原因。
-
-每个信源的关键字段：
+现在是 38 个信源：34 个 RSS、4 个网页列表；排在最前的是 bioRxiv 全部、Nature Biotechnology、Nature Machine Intelligence、Nature Reviews Drug Discovery 这类一手来源。这份文件只在启动时导入：文件里有的、库里没有的补上，已存在的不覆盖，从文件里删掉的也不会从库里删（不要的在后台暂停）。上线后日常维护用后台“信源”页：新建、试抓、调频率、暂停、看失败原因。
 
 | 字段 | 含义 |
 |---|---|
 | `kind` | `rss`、`web_list`（网页列表，配选择器）、`json_list`（JSON 接口）、`x_search`（X 账号，需要 SocialData）、`mp_account`（公众号，需要极致了）、`external`（外部推送） |
-| `config` | 每种信源的配置，见 [信源](sources.md) |
-| `tier` | 信源分级：`T1` 官方一手、`T1_5` 官方账号与准官方、`T2` 媒体与个人、`EXCLUDE_MP` 不参与精选。不同分级的入选门槛不同。`T1` 就是“一手”，不用另外标 |
-| `owner_entity_id` | 可选，这个信源属于哪家公司（`ENTITIES` 的 id）。同一家公司的几个信源在热度里只算一个参与方；`T1_5` 的官方账号要当代表报道，也要填它（见 [信源](sources.md)） |
+| `config` | 每种信源自己的配置，见 [信源](sources.md) |
+| `tier` | `T1` 官方一手、`T1_5` 官方账号与准官方、`T2` 媒体与个人、`EXCLUDE_MP` 与未列出的分级不参与精选评分（只进“全部动态”）。分级决定入选门槛 |
+| `owner_entity_id` | 可选，属于哪家公司（`ENTITIES` 的 id）。同一家公司的几个信源在热度里只算一个参与方 |
 | `participation_mode` | `editorial` 进精选和全部动态；`hot_signal` 只作热度证据；`isolated` 不进任何公开页面 |
-| `site_fulltext` | 站内能不能展示全文。**默认关**：只展示摘要和原文链接。只有来源明确允许时才打开 |
-| `syndicate_fulltext` | 全文 RSS 能不能带正文。**默认关**；只在站内也展示全文时生效，来源明确允许转载时才打开 |
+| `site_fulltext` | 站内能不能展示全文，**默认关**，只展示摘要和原文链接 |
+| `syndicate_fulltext` | 全文 RSS 能不能带正文，**默认关**，只在站内也展示全文时生效 |
 
-中国大陆的很多行业，一手信息在公众号上。公众号信源需要极致了（Dajiala）的 key，按请求计费，有预算熔断。
+AIDD 的一手信息很多在期刊、公司管线页和 FDA/EMA/NMPA 公告上，公众号与 X 用来补 BD 与会议消息；公众号信源要极致了（Dajiala）的 key，按请求计费并有预算熔断。哪种消息值得加信源，问站主本人，不要替他决定。
 
 ## 4. 精选标准：`industry/prompts/`
 
-这是最值得花时间的一步：你对这个行业的判断经验就写在这里。
+最值得花时间的一步，你对这个行业的判断就写在这里。
 
 | 文件 | 作用 |
 |---|---|
-| `prefilter.md` | 预筛：这条资料是不是这个行业的事。宽召回，只拦明显无关的 |
-| `selection-score.md` | **评分标准**：给 0–100 分。里面有内容类型、五个维度、各类型的权重、必须正常评价的价值、必须压住的噪声 |
-| `content-understanding.md` | 入选和接近入选内容的写法：中文标题、答案先行的摘要、推荐理由（它也会给标签，但页面上的分类和标签来自 `structure.md`） |
-| `rules-domain.md` | 行业术语的翻译与保留规则（示例是 AI 术语：LLM 译作大语言模型、Token 保留英文……） |
-| `mend-wording.md` | 改用词：标题、摘要、推荐理由用了 `industry/wording.ts` 里列出的词时，让模型只改这些词 |
+| `prefilter.md` | 预筛：这条资料是不是 AI 药物研发或生物医药产业的事。宽召回，只拦明显无关的 |
+| `selection-score.md` | **评分标准**：0–100 分，含内容类型、五个维度、各类型权重、必须正常评价的价值、必须压住的噪声 |
+| `content-understanding.md` | 入选和接近入选内容的写法：中文标题、答案先行的摘要、推荐理由、内容类型 |
+| `rules-domain.md` | 术语的翻译与保留规则（如 ADC 译作抗体偶联药物、IND 保留英文、AlphaFold3 不译） |
+| `mend-wording.md` | 改用词：标题摘要用了 `industry/wording.ts` 里列出的词时，只改这些词 |
 | `summarize-*.md` | 其他内容的标题摘要写法 |
-| `structure.md` | 分类、标签、主体公司，判断是一条具体新闻还是讲多件事的综合稿，抽出新闻的事实（谁、做了什么、对什么，附原文出处和前提条件）。页面上的分类和标签、主题页、事件归组和日报都靠它 |
-| `group-*.md` | 事件归组：两篇报道是同一次发生、同一事件的后续，还是两件事；同时判断报道相对精选里已有的内容有没有新信息，没有的不进精选 |
-| `story-digest.md` | 事件页的综述（改之前用 [综述评测](story-digest-evaluation.md) 并排比较） |
-| `report-period.md`、`report-period-sections.md` | 周报月报的总述和栏目导读（日报按规则编排，不用提示词） |
+| `structure.md` | 分类、标签、主体公司，判断是具体新闻还是综合稿，抽出事实，并抽 `deal` / `readout` / `modelCard` 三张卡 |
+| `group-*.md` | 事件归组：同一次发生、同一事件的后续，还是两件事；报道有没有新信息 |
+| `story-digest.md` | 事件页综述（改之前用 [综述评测](story-digest-evaluation.md) 并排比较） |
+| `report-period*.md` | 周报月报的总述与栏目导读（日报按规则编排，不用提示词） |
 | `translate-*.md` | 全文翻译 |
 
-你的站有读者文字里不用的词（夸张的说法、方言词、读者看不懂的行话），写进 `industry/wording.ts`：每项是一个正则和改法。写完标题、摘要和推荐理由后逐个查，用了就让模型只改这些词一次（模型步骤“改用词”，环境变量 `WORDING_MODEL` 可以单独选模型）；改完数字有变、标题摘要变空，或模型服务拒绝改写，就保留原文字。词表空着就不查，也不多调用，模型服务拒绝服务时的告警里也不列这一步。
+三张结构卡不是随便加的字段：它们直接长出 `/deals`、`/readouts`、`/model-cards`、`/targets`、`/drugs` 和周报月报的“台账”段。改卡的字段名或口径，要同时改 `packages/contracts/src/site.ts` 的类型、`publication/structured.ts` 与 `entities.ts` 的读法、`reports/ledger.ts` 的统计，细节见 [架构](architecture.md#台账交易临床读出模型卡) 的“台账”一节。提示词里那句“数字必须是原文里能原样查到的写法，不估算、不换算、不补全”是这三张表的可信度来源，不要放宽。
 
-提示词里用 `{{siteName}}` 指代站名，`{{> 文件名}}` 引用另一份提示词。改提示词不用改代码。
+改评分标准时**保留结构**（内容类型、五维加权、噪声压制、安全边界），只换例子：AlphaFold3 与 Boltz-2 的开源权重和基准、KRAS G12C 抑制剂的 ORR 与 PFS 读出、license-out 交易的首付与总额、FDA 批准新适应症，这些该正常评价；融资 PR 稿、会议报名页、纯综述营销文、股价点评要压住。
 
-**建议的做法**：先保留结构（五个维度加权、噪声压制规则、安全边界），只把“什么算重要”“什么算噪声”的例子换成你的行业。比如法律行业，“新法规正式公布、重要判决、监管处罚”应该正常评价，“律所营销软文、课程广告”要压住。
+`industry/wording.ts` 的 `READER_WORDING` 现在是空的，要拦“炸裂”“王炸”这类词时按正则加条目；写了之后模型步骤“改用词”（`WORDING_MODEL`）才会跑，改完数字有变、标题摘要变空或模型拒绝，就保留原文字。
+
+提示词里用 `{{siteName}}` 指代站名，`{{> 文件名}}` 引用另一份提示词，改提示词不用改代码。
 
 ## 5. 门槛与校准：`industry/selection.ts`
 
-两次评分之和 ≥ 2 × 门槛才够分（够分的还要过归组时的去重，见 [精选与校准](selection.md)）。默认门槛（T1 60、T1_5 65、T2 76）是 AIHOT 在 AI 领域校准出来的。`classes` 是抬高门槛的信源类别（示例是 AI 行业的“生态与基础设施”“评测榜单”，换行业时换成你的类别或删空），`browseFloor` 是浏览“全部动态”的最低分（默认 40）。换了行业和提示词，需要重新校准：
+两次评分之和 ≥ 2 × 门槛才够分（够分的还要过归组去重，见 [精选与校准](selection.md)）。现在的值：
 
-1. 从你的信源里挑 100–200 条资料，自己标“该选 / 不该选”，存成 `.data/gold.jsonl`（格式见 [精选与校准](selection.md)，`industry/gold.example.jsonl` 有两条示例）。
-2. 运行 `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl`，看准确率、查准率、查全率，和不同门槛下的结果。
-3. 在后台 SelectBench 里逐条看判错的资料，回去改评分提示词或门槛，再跑一遍。
+- `thresholds`：`T1` 36、`T1_5` 38、`T2` 40。官方一手的最低，媒体最高。
+- `classes`：厂商技术博客 39、财报与投资者关系 44、评测榜单 48，只抬不降。
+- `understandFloor` 35（没入选但分数高于它的，也按入选的写法做内容理解），`browseFloor` 25（“全部动态”里还看得见的最低分）。
 
-这一步决定了你的站“选得准不准”。
+**媒体门槛必须高于官方**：把 `T2` 放到 36 能多收一些稿子，但媒体转述会压过官方原文，权威排序就毁了。这条比多收几条重要。
+
+**不要凭感觉改数字**，这个站的评分模型分布是压缩的（真事大多 40–60 分，噪声 12–30 分），几分之差就能改变一批结果。校准顺序：
+
+1. 标注样本：从本站信源挑一批资料，自己判“该选 / 不该选”，存进 `industry/gold.jsonl`（现有 28 条，格式见 `industry/gold.example.jsonl` 和 [精选与校准](selection.md)）。加样本前先跑 `npm run check:gold`，它只校验字段和决策值，不调模型、不连数据库。
+2. 跑评测：`node --env-file=.env scripts/eval-selection.ts --gold industry/gold.jsonl`，看查准率、查全率、判错的条目；报告写在 `.data/eval/selection-*.json`，同时导入后台 SelectBench（`--no-import` 可跳过）。
+3. 逐条看错的：在后台 SelectBench 里读被判错的原文，判断是该改评分提示词还是改门槛，改完再跑一遍。有回执，重跑同一条样本不重复花钱。
+4. 门槛扫描的区间来自 `site/site.ts` 的 `DEPLOYMENT.selectionGold`：现在是 `null`，脚本就用自己默认的 40–90，看不到现在的 36 和 38。要在低分区比较，把 `selectionGold` 写成 `{ file: "industry/gold.jsonl", sample: 200, split: "all", sweep: [30, 46] }` 再跑。
+
+改 `selection.ts` 不会让测试失败（门槛由代码读），但等于换了站的取舍，改完必须重跑 gold 样本，并在更新日志里写清楚。
 
 ## 6. 品牌：`site/brand/`
 
 - `logo.svg`、`icon.png`（512）、`icon-192.png`、`apple-icon.png`（180）、`favicon.ico`：站点图标。
-- `Logo.tsx`：网页左上角的站名标志，默认用站名文字排出来；有自己的 Logo，把 `Wordmark` 换成你的 SVG，参数保持不变。
-- `wordmark.svg`、`wordmark-dark.svg`（可选）：分享图和海报上的字标，深色版用在深色的分享图上；没有就用站名文字。
-- 分享图的字体（可选，放在 `assets/og-fonts/`）：分享图用 Noto Sans SC 子集（GB2312 + 基本拉丁），繁体、日文汉字、假名、韩文和带变音符的拉丁字母会画不出来。信源有这些文字时，放进 `<名字>-400.ttf` 和 `<名字>-700.ttf`，缺的字依次从这些字体里取（按文件名排序）；换了字体要重启服务，分享图缓存随之换新。不放就和原来一样。
-- `nameplates/`：日报、周报、月报页顶部的报头字（比如“AI日报”）。换了行业词以后重新生成：
+- `Logo.tsx`：网页左上角的标志，默认用站名文字排出来；有正式 Logo 时把 `Wordmark` 换成 SVG，参数保持不变。
+- `wordmark.svg`、`wordmark-dark.svg`（可选）：分享图和海报上的字标。
+- 分享图字体（可选，`assets/og-fonts/`）：默认用 Noto Sans SC 子集；信源里常出现繁体、日文汉字或带变音符的拉丁字母时，放 `<名字>-400.ttf`、`<名字>-700.ttf` 补字，缺的字按文件名顺序回退，换字体要重启服务。
+- `nameplates/`：日报周报月报页顶部的报头字。改站名或行业词以后重新生成：
   ```bash
   npm pack @fontsource/noto-sans-sc@5.3.0 && tar xzf fontsource-noto-sans-sc-5.3.0.tgz
   node scripts/nameplates.ts package
   ```
-- 关于页的二维码：先在 `site.ts` 的 `ABOUT.maker` 写好作者块，并写上 `wechat`、`feishu` 卡片（标题和说明）；再在后台“设置 → 关于页二维码”上传图片，或者把图片放进 `site/brand/contact/`，文件名以 `qr-wechat`、`qr-feishu` 开头，格式是 png、jpg 或 webp。作者块、卡片或图片缺一样，那张二维码就不显示。
+- 关于页二维码：先在 `site.ts` 的 `ABOUT.maker` 写好作者块和 `wechat`、`feishu` 卡片，再在后台“设置 → 关于页二维码”上传，或把图片放进 `site/brand/contact/`，文件名以 `qr-wechat`、`qr-feishu` 开头（png/jpg/webp）。缺一样，那张二维码就不显示。
 
-请不要使用 AIHOT 的名字和 Logo。
+站名、图标和 Logo 全部用本站自己的，别沿用框架自带的（见 `AGENTS.md`）。
 
-读者可以在“我的”页将字体从“默认字体”改为“浏览器默认字体”。后一项使用读者在浏览器中设置的标准字体，覆盖普通正文、表单和动态图表文字；代码仍用等宽字体，Logo、报头字和分享图片仍按站点品牌显示。字体选择只在当前浏览器保存，不转换简繁体。收藏页的版本 1 备份增加了可选的 `font` 字段，旧备份仍可导入；导入不会覆盖读者已经选择的浏览器字体。
+## 7. 页面文案与站点根目录文件
 
-## 7. 页面文案：`site/pages/`、`site/public/`、`site/changelog.json`
-
-- `pages/terms.md`、`pages/privacy.md`：使用规则和隐私说明。**现在是模板**，上线前按你的实际情况改写，必要时请专业人士看一下。
-- `public/`：网站根目录上的四个固定文件，替换占位符后发布：`robots.txt`、`manifest.webmanifest`（装到手机桌面时的名字和图标）、`openapi-v1.json`（公开 API 的说明），以及可选的 `.well-known/security.txt`（安全问题的联系方式）。只发布这四个文件，放进去的其他文件不会出现在网站上；没有的文件访问时是 404。文件里可以写这些占位符：`{{siteName}}`、`{{siteUrl}}`、`{{description}}`、`{{tagline}}`、`{{locale}}`，出刊时间 `{{dailyTime}}`、`{{weeklyTime}}`、`{{monthlyTime}}`，公开接口版本 `{{version}}`，逗号分隔的公开分类 `{{categoryList}}`；JSON 文件里 `enum` 或 `examples` 列表中的 `"{{categories}}"` 会换成公开分类的 key 列表。
-- `changelog.json`：更新日志。自带一条“网站上线”示例，上线前把它的 `date`、`time` 和 `latestVersion` 改成你的上线时间；示例正文里的框架署名（“用 AIHOT 开源框架搭起了这个站”）同样可留可删。新条目写在最前面，把 `latestVersion` 改成它的日期和时间。`kind` 是“更新”“优化”“公告”“下线”之一；要读者一定看到的加 `"urgent": true`（红色，标“重要”）。
+- `site/pages/terms.md`、`privacy.md`：使用规则和隐私说明，现在是模板，上线前按实际情况改写并请站主本人确认。
+- `site/public/`：站点根目录的固定文件，替换占位符后发布：`robots.txt`、`manifest.webmanifest`（装到手机桌面的名字和图标）、`openapi-v1.json`（公开 API 说明），以及可选的 `.well-known/security.txt`。只发布这几个，放进去的其他文件不会出现在网站上。可用的占位符：`{{siteName}}`、`{{siteUrl}}`、`{{description}}`、`{{tagline}}`、`{{locale}}`、`{{dailyTime}}`、`{{weeklyTime}}`、`{{monthlyTime}}`、`{{version}}`、`{{categoryList}}`；JSON 文件里 `enum` 或 `examples` 中的 `"{{categories}}"` 会换成公开分类的 key 列表。
+- `site/changelog.json`：更新日志，首条是“网站上线”（2026-11-10 08:00）。新条目写在最前面并改 `latestVersion`；`kind` 取“更新”“优化”“公告”“下线”之一，要读者一定看到的加 `"urgent": true`。
 
 ## 8. 模型和部署
 
-- 模型：`.env` 里的 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`，任何 OpenAI 兼容接口都行，所有步骤默认都用它。`site/models.ts` 列出具名的模型（各用自己的地址和密钥环境变量）和每一步默认用哪个；部署时还可以用环境变量（见 `.env.example`）或后台“模型与评测”页逐步改选。用推理模型（先想再答）时给它留出推理的额度：默认模型设 `LLM_REASONING_TOKENS`，具名模型在 `site/models.ts` 里写 `reasoningTokens`；不留的话推理会把每一步的输出额度用光，答案为空，每次调用都失败。 评分预设还可写 `scoreCall: { temperature, maxTokens, timeoutMs }`，分别控制温度、输出额度和超时毫秒；示例评分预设已明确配置这些值。备用模型的 `fallbackFor` 按能力名指定它接替的主模型，须先用自己的资料评测这组组合；示例站默认没有备用组合。
-- 部署：见 [部署](deploy.md)。
+- `.env` 的 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL` 是所有步骤的默认模型，任何 OpenAI 兼容接口都行。`site/models.ts` 列出具名预设（现在有 glm-5.3-flash、deepseek-flash、qwen3-vl-flash 等）和每一步默认用哪个；单步可在 `.env` 用 `PREFILTER_MODEL`、`SCORE_MODEL`、`STRUCTURE_MODEL`、`GROUP_MODEL` 这类变量改选。
+- 用推理模型时留出额度：默认模型设 `LLM_REASONING_TOKENS`，具名模型在 `site/models.ts` 写 `reasoningTokens`。不留的话推理会吃掉整步的输出额度，结果为空。
+- 评分那一步可以用 `scoreCall: { temperature, maxTokens, timeoutMs }` 单独配（`glm-5.3-flash-selection` 就是这样一个预设）。备用模型用 `fallbackFor` 按能力名指定它接替谁，启用前先用本站样本评测这组组合。
+- 部署见 [部署](deploy.md)。
 
 ## 改完以后检查
 
 ```bash
 npm run typecheck
-DATABASE_URL=postgres://…/myhot_test npm test     # 库名必须以 _test 或 _ci 结尾，数据库账号要能建库
+DATABASE_URL=postgres://…/baize_test npm test     # 库名必须以 _test 或 _ci 结尾，账号要能建库
 npm run build -w @aihot/web && npm run test:web
 node scripts/smoke.ts --base http://localhost:3000   # 站点跑起来以后
 ```
 
-改写提示词、重新校准门槛不会让测试失败：测试按每一步实际渲染出的提示词认请求，门槛从 `industry/selection.ts` 读。`tests/` 里有些测试用的是示例行业的分类、标签和公司（比如 `ai-models`、“模型发布”、Anthropic）。改了 `industry/taxonomy.ts` 以后这些测试会失败，把例子换成你行业里的对应项即可，测的规则本身不用改。
+改提示词或门槛不会让测试失败（测试按每一步实际渲染的提示词认请求，门槛从 `selection.ts` 读）。但 `tests/` 里有些用例写死了本站的分类 key、标签和公司名，改了 `industry/taxonomy.ts` 之后这些用例会失败——把例子换成新的对应项，测的规则本身不用改。
 
-然后打开网站看一眼首页、全部动态、日报、主题页和关于页，再去后台“信源”页看信源是不是都抓成功了。
+最后人工看一遍：首页、`/all`、`/deals`、`/readouts`、`/model-cards`、`/targets`、`/drugs`、日报、主题页、关于页，再去后台“信源”页确认都抓成功、“运行”页没有卡住的任务。
