@@ -69,6 +69,8 @@ packages/ apps/    引擎本体
 
 **看哪里出问题。** 后台「抓取」「模型调用」两页有每次请求的回执和失败原因；`docker compose logs -f worker` 是原始日志。
 
+**读者订阅（邮件日报）。** `/subscribe` 收集邮箱，订阅者收到确认信、点链接确认后，每天 08:20 收到当天日报的邮件（`ops.subscribers`）。发信走 `MAIL_API_URL` / `MAIL_API_KEY` / `MAIL_FROM` 三项配置的 HTTP 接口（任何事务邮件服务都行）；三项没配时流程照常走，但信只会写进容器里的 `/data/mail/`，本机调试就靠它看排版和链接。确认链接 7 天有效，退订链接一下即退（`subscribers.unsubscribed_at`），退订后再订阅要重新确认一次。
+
 ## 文档
 
 `docs/` 下是引擎文档，仍然适用：信源六种配法（`sources.md`）、精选与校准（`selection.md`）、事件归组（`grouping.md`）、部署与备份（`deploy.md`）、架构与不变规则（`architecture.md`）。

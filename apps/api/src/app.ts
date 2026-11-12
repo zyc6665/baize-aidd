@@ -7,6 +7,7 @@ import { sql } from "@aihot/backend/db";
 import { logError } from "@aihot/backend/lib/log-error";
 import { serverModules } from "@aihot/backend/modules";
 import { registerSite } from "./routes/site.ts";
+import { subscribeRoutes } from "./routes/subscribe.ts";
 import { registerOg } from "./routes/og.ts";
 import { registerAdminAuth } from "./routes/admin-auth.ts";
 import { registerAdmin } from "./routes/admin.ts";
@@ -91,6 +92,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   registerSite(app);
+  subscribeRoutes(app);
   registerOg(app);
   registerAdminAuth(app);
   // The admin pages' API, on a site that has the pages; signing in serves every site.

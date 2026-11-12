@@ -21,6 +21,7 @@ import { recoverStaleWork } from "@aihot/backend/operations/recover";
 import { forwardPendingFeedback } from "@aihot/backend/operations/feedback";
 import { backupConfigured, runBackup } from "@aihot/backend/operations/backup";
 import { sourceHealthWeekly } from "@aihot/backend/operations/reports";
+import { sendDailyDigest } from "@aihot/backend/operations/subscription";
 
 const collecting = process.env.COLLECT_ENABLED === "true";
 
@@ -47,6 +48,8 @@ const ENGINE_SCHEDULES: Scheduled[] = [
   { name: "ops.alerts", cron: "*/10 * * * *", run: () => checkAlerts() },
   // One message with other follow-ups and their actual impact (nothing when there are none).
   { name: "ops.digest", cron: "0 9 * * *", missed: "once", run: () => sendDigest() },
+  // Reader mail, right after the 08:00 daily is composed: one issue a day, to the addresses that confirmed.
+  { name: "ops.subscribers", cron: "20 8 * * *", missed: "once", run: () => sendDailyDigest() },
   // Feedback that did not reach the internal Feishu chat when it was sent (off with FEISHU_INTERNAL_ENABLED).
   { name: "feedback.forward", cron: "*/10 * * * *", run: () => forwardPendingFeedback() },
   ...(backupConfigured() ? [{ name: "ops.backup", cron: "10 4 * * *", missed: "once" as const, run: () => runBackup() }] : []),

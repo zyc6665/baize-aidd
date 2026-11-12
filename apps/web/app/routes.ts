@@ -22,6 +22,7 @@ export default [
   route("deals", "routes/deals.tsx"),
   route("readouts", "routes/readouts.tsx"),
   route("model-cards", "routes/model-cards.tsx"),
+  route("subscribe", "routes/subscribe.tsx"),
   route("targets", "routes/targets.tsx"),
   route("targets/:slug", "routes/target.tsx", { id: "target" }),
   route("drugs", "routes/drugs.tsx"),

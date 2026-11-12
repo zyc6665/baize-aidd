@@ -53,6 +53,16 @@ export const config = {
   baiduPushEnabled: bool("BAIDU_PUSH_ENABLED", false),
   /** The token in Baidu's push address (搜索资源平台 · 普通收录 · API提交) for SITE_URL; a secret. */
   baiduPushToken: env.BAIDU_PUSH_TOKEN || null,
+  /**
+   * Reader mail (the daily digest): an HTTP mail endpoint that takes {from,to,subject,text,html} as JSON.
+   * Without it nothing is sent — new subscriptions are written to <dataDir>/mail instead, so the flow can be
+   * walked through locally without a provider.
+   */
+  mailApiUrl: env.MAIL_API_URL || null,
+  mailApiKey: env.MAIL_API_KEY || null,
+  mailFrom: env.MAIL_FROM || null,
+  /** Address the confirmation and unsubscribe links are built from; SITE_URL is the default. */
+  mailPublicUrl: (env.MAIL_PUBLIC_URL || str("SITE_URL", SITE.defaultUrl)).replace(/\/+$/, ""),
   /** Optional directory of per-group dotenv files (models.env, collectors.env, …); normally everything is in .env. */
   credentialsDir: credentialsDir ? path.resolve(REPO_ROOT, credentialsDir) : null,
   dataDir: str("AIHOT_DATA_DIR", path.join(REPO_ROOT, ".data")),
