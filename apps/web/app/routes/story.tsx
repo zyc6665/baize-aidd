@@ -136,7 +136,7 @@ type Filter = "all" | "official" | "selected";
 type Order = "desc" | "asc";
 
 // The report filter and shared reading order, per history entry: back from a report restores the view.
-const viewCache = sessionCache<{ savedAt: number; filter: Filter; order: Order }>("aihot:story-view:", 30 * 60 * 1000);
+const viewCache = sessionCache<{ savedAt: number; filter: Filter; order: Order }>("baize:story-view:", 30 * 60 * 1000);
 
 export default function StoryPage() {
   const { story } = useLoaderData<typeof loader>();

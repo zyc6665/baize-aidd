@@ -50,11 +50,11 @@ export const SITE = {
    */
   siteVerification: {} as Record<string, string>,
   /** 网站开始收录的年份（结构化数据的时间范围，选填）。 */
-  since: null as string | null,
+  since: "2026" as string | null,
   /** 界面语言（HTML lang、og:locale）。 */
   locale: "zh-CN",
   /** 默认域名，只在没设置 SITE_URL 时使用。 */
-  defaultUrl: "http://localhost:3000",
+  defaultUrl: "https://cpumodel.online",
   /** 标准图标（favicon.ico、icon.png、icon-192.png、apple-icon.png、logo.svg）以外也放在网站根目录的图标，site/brand/ 里的文件名（选填）；manifest.webmanifest 或外站引用了它们时用。 */
   rootIcons: [] as string[],
   /**
@@ -68,7 +68,7 @@ export const SITE = {
    */
   interfaceVersion: "4.0.0",
   /** 对外联系邮箱（选填）：llms.txt 和给 Agent 的使用说明里会写。 */
-  contactEmail: null as string | null,
+  contactEmail: "zyc.cpu@gmail.com" as string | null,
   /** 关于页底部的一行小字（选填）。 */
   footerNote: "基于 AIHOT 开源框架构建",
   /** 中国大陆网站的 ICP 备案号（选填），填了就显示在侧栏底部和“我的”页底部，并链接到工信部备案系统。 */

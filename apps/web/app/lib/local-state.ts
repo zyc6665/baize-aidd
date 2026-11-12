@@ -5,14 +5,14 @@ import { useEffect, useSyncExternalStore } from "react";
 import { beijingDate } from "@aihot/contracts/time";
 
 export const KEYS = {
-  starred: "aihot-starred-items",
-  read: "aihot-read-items",
-  unreadOnly: "aihot-unread-only",
-  theme: "aihot-theme",
-  font: "aihot-font",
-  changelogSeen: "aihot-changelog-seen-version",
-  feedbackDraft: "aihot-feedback-draft-v1",
-  recentSearches: "aihot-recent-searches",
+  starred: "baize-starred-items",
+  read: "baize-read-items",
+  unreadOnly: "baize-unread-only",
+  theme: "baize-theme",
+  font: "baize-font",
+  changelogSeen: "baize-changelog-seen-version",
+  feedbackDraft: "baize-feedback-draft-v1",
+  recentSearches: "baize-recent-searches",
 } as const;
 
 const STARRED_LIMIT = 500;
@@ -373,7 +373,7 @@ export function clearRecentSearches() {
 }
 
 // the page the reader was on (feedback records where a problem was seen)
-const LAST_PAGE_KEY = "aihot:last-page";
+const LAST_PAGE_KEY = "baize:last-page";
 const NOT_A_PLACE = /^\/(feedback|more)(\/|$)|^\/admin(\/|$)/;
 
 /** Called on every in-site navigation: remembers the latest real page, never feedback, "更多" or the admin. */
