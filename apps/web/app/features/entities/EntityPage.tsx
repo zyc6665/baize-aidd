@@ -4,8 +4,7 @@ import { Link } from "react-router";
 import type { EntityKind, EntityListResponse, EntityPageResponse } from "@aihot/contracts/site";
 import { SITE, subjectAfter } from "@aihot/site";
 import { pageMeta } from "../../lib/seo";
-import { EmptyState } from "../../components/ui/Page";
-import { IconArrowLeft } from "../../components/icons";
+import { BackLink, EmptyState } from "../../components/ui/Page";
 import { HEAD, Row } from "../tables/TablePage";
 
 export const COPY: Record<EntityKind, { title: string; lead: string; path: string; rowNoun: string }> = {
@@ -49,12 +48,9 @@ export function EntityIndex({ kind, data }: { kind: EntityKind; data: EntityList
   return (
     <div className="mx-auto max-w-[var(--page-max-wide)] px-4 pb-16 pt-6 lg:px-8">
       <header className="mb-6">
-        <Link
-          to="/deals"
-          className="mb-2 inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent-ink"
-        >
-          <IconArrowLeft size={14} /> 返回台账
-        </Link>
+        <div className="mb-2">
+          <BackLink to="/deals">返回台账</BackLink>
+        </div>
         <div className="text-[12px] uppercase tracking-wider text-accent-ink">{subjectAfter("AIDD", "台账")}</div>
         <h1 className="mt-1 text-[26px] font-semibold text-ink">{copy.title}索引</h1>
         <p className="mt-2 max-w-[70ch] text-[14px] leading-6 text-ink-3">{copy.lead}</p>
@@ -84,12 +80,9 @@ export function EntityDetail({ kind, data }: { kind: EntityKind; data: EntityPag
   const copy = COPY[kind];
   return (
     <div className="mx-auto max-w-[var(--page-max-wide)] px-4 pb-16 pt-6 lg:px-8">
-      <Link
-        to={copy.path}
-        className="mb-3 inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent-ink"
-      >
-        <IconArrowLeft size={14} /> 返回{copy.title}索引
-      </Link>
+      <div className="mb-3">
+        <BackLink to={copy.path}>返回{copy.title}索引</BackLink>
+      </div>
       <header className="mb-5">
         <h1 className="text-[26px] font-semibold text-ink">{data.name}</h1>
         <p className="mt-2 max-w-[70ch] text-[14px] leading-6 text-ink-3">

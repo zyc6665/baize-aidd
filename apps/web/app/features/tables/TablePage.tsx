@@ -8,7 +8,7 @@ import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
 import { SITE, subjectAfter } from "@aihot/site";
 import { pageMeta } from "../../lib/seo";
 import { monthDay } from "../../lib/format";
-import { EmptyState } from "../../components/ui/Page";
+import { BackLink, EmptyState } from "../../components/ui/Page";
 
 const COPY: Record<TableKind, { title: string; kicker: string; lead: string; path: string }> = {
   deals: {
@@ -29,6 +29,13 @@ const COPY: Record<TableKind, { title: string; kicker: string; lead: string; pat
     lead: "新模型与新方法：做什么任务、在什么基准上测、权重能不能拿到。只有原文写明的指标才出现在这里。",
     path: "/model-cards",
   },
+};
+
+/** 三张台账互为兄弟：交易台账是这一组的落脚页，本身挂在首页下面。 */
+const PARENT: Record<TableKind, { to: string; label: string }> = {
+  deals: { to: "/", label: "返回首页" },
+  readouts: { to: "/deals", label: "返回台账" },
+  models: { to: "/deals", label: "返回台账" },
 };
 
 /** The site API path for one page of a table. Loaders call this; the fetch itself stays in the route. */
@@ -211,6 +218,9 @@ export function TableView({ kind, data }: { kind: TableKind; data: TableResponse
   return (
     <div className="mx-auto max-w-[var(--page-max-wide)] px-4 pb-16 pt-6 lg:px-8">
       <header className="mb-5">
+        <div className="mb-2">
+          <BackLink to={PARENT[kind].to}>{PARENT[kind].label}</BackLink>
+        </div>
         <div className="text-[12px] uppercase tracking-wider text-accent-ink">{copy.kicker}</div>
         <h1 className="mt-1 text-[26px] font-semibold text-ink">{copy.title}</h1>
         <p className="mt-2 max-w-[70ch] text-[14px] leading-6 text-ink-3">{copy.lead}</p>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { Link } from "react-router";
-import { IconChevronRight } from "../icons";
+import { IconArrowLeft, IconChevronRight } from "../icons";
 
 /**
  * The reading template, one of the site's two page widths (the other is the full-width feeds and
@@ -104,5 +104,21 @@ export function EmptyState({ title, children, action }: { title: ReactNode; chil
       {children && <p className="mt-1.5 max-w-sm text-[13px] leading-relaxed text-ink-4">{children}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
+  );
+}
+
+/**
+ * 「← 返回台账」: a page reached by drilling in says, in words, where it came from. Breadcrumbs alone
+ * disappear into the title on this site (12px, low contrast), so every drill-down page carries this.
+ */
+export function BackLink({ to, children, className = "" }: { to: string; children: ReactNode; className?: string }) {
+  return (
+    <Link
+      to={to}
+      className={`inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent-ink ${className}`}
+    >
+      <IconArrowLeft size={14} />
+      {children}
+    </Link>
   );
 }
