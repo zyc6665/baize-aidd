@@ -105,7 +105,7 @@ function stagesOf(stats: SiteStats | null): Stage[] {
       title: "成刊",
       figure: stats && <Figure n={stats.dailies} unit={REPORTS.metricUnits.reportsCovered} />,
       text: ABOUT.steps.publish,
-      note: "也可以用 RSS、API、MCP 订阅",
+      note: <>想每天收到一封<Link to="/subscribe" className="text-accent-ink underline decoration-line-strong underline-offset-2 hover:decoration-accent-ink">订阅</Link>，或用 RSS、API、MCP</>,
     },
   ];
 }

@@ -439,3 +439,17 @@ export interface AdminSelectBenchCases {
   rows: Array<{ case_id: string; title: string; stratum: string | null; gold: "select" | "reject" | "either"; by_model: Record<string, AdminSelectBenchDecision> }>;
   strata: Array<{ stratum: string | null; n: number }>;
 }
+export interface AdminFollowUp {
+  key: string;
+  level: "now" | "today" | "later";
+  title: string;
+  impact: string | null;
+  action: string | null;
+  detail: string | null;
+  since: string;
+}
+
+export interface AdminFollowUps {
+  items: AdminFollowUp[];
+  checkedAt: string;
+}

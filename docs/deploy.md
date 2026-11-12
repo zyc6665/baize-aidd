@@ -54,6 +54,8 @@ npm run check:deploy
 - `SITE.contactEmail`：联系邮箱，现在是 `zyc.cpu@gmail.com`；
 - `SITE.siteVerification`：站长平台的验证码，不提交收录可以空着；
 - 备份对象存储四项：`DB_BACKUP_STORE_SECRET_ID`、`DB_BACKUP_STORE_SECRET_KEY`、`DB_BACKUP_STORE_BUCKET`、`DB_BACKUP_STORE_REGION`；
+- 读者订阅的邮件出口：`MAIL_API_URL`、`MAIL_API_KEY`、`MAIL_FROM`（没配时 `/subscribe` 照常收邮箱，但信只写进容器的 `/data/mail/`）；
+- 搜索收录开关：`INDEXNOW_SUBMIT_ENABLED` 或 `BAIDU_PUSH_ENABLED` 至少开一个（先 `node scripts/seo.ts` 生成 key 并确认 `<SITE_URL>/<key>.txt` 能打开）；
 - `DEPLOYMENT.requiredSecrets`：API 启动时要额外检查的密钥清单，当前为空，启动只查会话、图片签名和管理员登录。
 
 输出里 ✓ 是通过，✗ 是阻塞项，· 是建议补的。有阻塞项时退出码为 1，最后一行写「还有 N 项拦着不能公开上线；另有 M 项建议补上」。

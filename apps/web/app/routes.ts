@@ -58,6 +58,7 @@ export default [
     route("admin/sources/:id", "routes/admin/source.tsx"),
     route("admin/feedback", "routes/admin/feedback.tsx"),
     route("admin/runs", "routes/admin/runs.tsx"),
+  route("admin/followups", "routes/admin/followups.tsx"),
     route("admin/models", "routes/admin/models.tsx"),
     route("admin/selectbench", "routes/admin/selectbench.tsx"),
     route("admin/selectbench/:runId", "routes/admin/selectbench-run.tsx"),

@@ -686,6 +686,26 @@ export async function restoreFollowUp(key: string, reason: string, actor: string
   return before;
 }
 
+/**
+ * The follow-ups still open, for the admin page: the same list the 09:00 digest carries, without waiting for a
+ * channel. Findings the owner already closed are left out; agent-only handoffs are not the owner's to do.
+ */
+export async function openFollowUps(now = Date.now()): Promise<Array<{
+  key: string; level: Level; title: string; impact: string | null; action: string | null; detail: string | null; since: string;
+}>> {
+  const found = await collectFindings(now);
+  const dismissed = await dismissedFollowUps(found, now);
+  return found.filter((f) => !dismissed[f.key] && !f.agentOnly).map((f) => ({
+    key: f.key,
+    level: f.level,
+    title: f.title,
+    impact: f.impact ?? null,
+    action: f.action ?? null,
+    detail: f.detail ?? null,
+    since: (f.since ?? f.observedAt ?? new Date(now)).toISOString(),
+  }));
+}
+
 /** 09:00: the open follow-ups, one list; nothing when there are none. Closures whose problem is gone lapse here.
  *  Agent-only handoffs stay on the ops list and are not part of the owner's message. */
 export async function sendDigest(now = Date.now()) {
