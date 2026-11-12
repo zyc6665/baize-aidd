@@ -1,0 +1,40 @@
+{
+  "$comment": "别名表：把同一件事的不同写法并到一个实体页。name 是页面上显示的标准名，aliases 是原文里出现过的写法（大小写、连字符、括号、商品名与通用名）。匹配时把写法按字母数字归一后再比：整体、括号前的主体、括号里的每个名字都算候选，所以 \"abemaciclib (Verzenio)\" 既能匹配 abemaciclib 也能匹配 Verzenio。没有列进来的实体仍然靠“字母互相包含”自动归并。加条目只影响实体页，不改动已入库的分析结果。",
+  "targets": [
+    { "name": "factor XIa", "aliases": ["factor XIa", "factor XIa (FXIa)", "FXIa", "XIa", "凝血因子 XIa", "factor 11a"] },
+    { "name": "KRAS G12C", "aliases": ["KRAS G12C", "KRAS-G12C", "KRAS(G12C)", "KRAS G12C 突变"] },
+    { "name": "KRAS", "aliases": ["KRAS", "K-Ras", "KRAS G12D", "KRAS G12V"] },
+    { "name": "GLP-1", "aliases": ["GLP-1", "GLP1", "GLP-1 receptor", "GLP-1R", "胰高血糖素样肽-1"] },
+    { "name": "PD-1", "aliases": ["PD-1", "PD1", "programmed death-1", "程序性死亡受体 1"] },
+    { "name": "PD-L1", "aliases": ["PD-L1", "PDL1", "programmed death-ligand 1"] },
+    { "name": "HER2", "aliases": ["HER2", "HER-2", "ERBB2"] },
+    { "name": "BCMA", "aliases": ["BCMA", "BCMA-directed CD3 T-cell engager", "BCMA CD3", "B-cell maturation antigen"] },
+    { "name": "CD19", "aliases": ["CD19", "CD-19"] },
+    { "name": "TROP2", "aliases": ["TROP2", "TROP-2"] },
+    { "name": "CLDN18.2", "aliases": ["CLDN18.2", "Claudin 18.2", "claudin18.2"] },
+    { "name": "NTRK", "aliases": ["NTRK", "NTRK gene fusion", "pan-TRK", "TRK"] },
+    { "name": "MAGE-A4", "aliases": ["MAGE-A4", "MAGE A4", "MAGEA4"] },
+    { "name": "survivin", "aliases": ["survivin", "BIRC5"] },
+    { "name": "FAK/SRC", "aliases": ["FAK/SRC", "FAK", "SRC", "FAK and SRC"] },
+    { "name": "CSF-1R", "aliases": ["CSF-1R", "CSF1R", "colony stimulating factor 1 receptor"] },
+    { "name": "Lp(a)", "aliases": ["Lp(a)", "LPA", "lipoprotein(a)"] }
+  ],
+  "drugs": [
+    { "name": "asundexian", "aliases": ["asundexian", "Sunharbo", "asundexian (Sunharbo)", "Sunharbo (asundexian)", "BMS-986177"] },
+    { "name": "pembrolizumab", "aliases": ["pembrolizumab", "Keytruda", "pembrolizumab (Keytruda, Merck)", "帕博利珠单抗"] },
+    { "name": "nivolumab", "aliases": ["nivolumab", "Opdivo", "nivolumab (Opdivo)", "纳武利尤单抗"] },
+    { "name": "daratumumab", "aliases": ["daratumumab", "Darzalex", "Darzalex Faspro (daratumumab plus hyaluronidase)", "达雷妥尤单抗"] },
+    { "name": "abemaciclib", "aliases": ["abemaciclib", "Verzenio", "abemaciclib (Verzenio)", "阿贝西利"] },
+    { "name": "zanubrutinib", "aliases": ["zanubrutinib", "Brukinsa", "zanubrutinib (Brukinsa)", "泽布替尼"] },
+    { "name": "asciminib", "aliases": ["asciminib", "Scemblix", "asciminib (Scemblix)"] },
+    { "name": "elranatamab", "aliases": ["elranatamab", "Elrexfio", "elranatamab-bcmm (Elrexfio)", "elranatamab-bcmm"] },
+    { "name": "entrectinib", "aliases": ["entrectinib", "Rozlytrek", "entrectinib (Rozlytrek)"] },
+    { "name": "afamitresgene autoleucel", "aliases": ["afamitresgene autoleucel", "TECELRA", "afamitresgene autoleucel (TECELRA)", "afami-cel"] },
+    { "name": "ristoglogene autogetemcel", "aliases": ["ristoglogene autogetemcel", "risto-cel", "ristoglogene autogetemcel (risto-cel)"] },
+    { "name": "pimicotinib", "aliases": ["pimicotinib", "贝捷迈", "盐酸匹米替尼", "贝捷迈（盐酸匹米替尼胶囊）"] },
+    { "name": "PGN-EDODM1", "aliases": ["PGN-EDODM1", "PGN EDODM1", "PGNEDODM1"] },
+    { "name": "SIGX1094", "aliases": ["SIGX1094", "SIGX-1094"] },
+    { "name": "OVM-200", "aliases": ["OVM-200", "OVM200"] },
+    { "name": "dostarlimab", "aliases": ["dostarlimab", "dostarlimab-gxly", "Jemperli", "多塔利单抗"] }
+  ]
+}

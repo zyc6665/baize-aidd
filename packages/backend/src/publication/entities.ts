@@ -3,10 +3,18 @@
 // report's card names that entity, and a deal only joins it when its own text mentions the name. Scope is the
 // same browse scope as every other exit.
 //
-// One name, one page: the cards spell the same entity differently ("Factor XIa" / "XIa" / "factor XIa (FXIa)",
-// "Sunharbo" / "Sunharbo (asundexian)"), so names whose letters one contains the other are one cluster. The
-// longest spelling is the page's name and slug; merging beyond that would need an alias table we do not keep.
+// One entity, one page. Two mechanisms, in this order:
+//   1. industry/aliases.json — the curated list. A page's canonical name and every spelling that belongs to it
+//      (brand vs generic, hyphen vs space, the parenthesised form) are written down there by hand. Matching
+//      compares letters and digits only, over three candidates: the whole string, the part before "(", and each
+//      name inside the parentheses — so "abemaciclib (Verzenio)" finds the group of either name.
+//   2. containment, for everything not curated: names whose letters one contains the other are one cluster
+//      ("Factor XIa" / "XIa" / "factor XIa (FXIa)"). Without the alias table this splits brand/generic pairs
+//      ("Sunharbo" vs "asundexian (Sunharbo)") into two pages, which is what the table is for.
 import type { EntityKind, EntityListResponse, EntityPageResponse, TableRow } from "@aihot/contracts/site";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { REPO_ROOT } from "../config.ts";
 import { sql } from "../db.ts";
 import { publicSourceName } from "./rules.ts";
 import { browsedCondition, compositeCondition } from "./scope.ts";
@@ -24,8 +32,60 @@ const slugOf = (name: string) =>
     .replace(/[^\p{L}\p{N}]+/gu, "-")
     .replace(/^-+|-+$/g, "");
 
-/** Letters and digits only, for the containment test that decides which spellings are one entity. */
+/** Letters and digits only, for the alias lookup and the containment test. */
 const letters = (name: string) => name.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+
+/**
+ * The keys a spelling is looked up by: the whole string, the part before "(" and every name inside the
+ * parentheses. "pembrolizumab (Keytruda, Merck)" gives pembrolizumab / keytruda / merck.
+ */
+function nameKeys(name: string): string[] {
+  const keys = new Set<string>();
+  const push = (value: string) => {
+    const key = letters(value);
+    if (key) keys.add(key);
+  };
+  push(name);
+  push(name.split("(")[0] ?? "");
+  for (const inside of name.match(/\(([^)]*)\)/g) ?? []) {
+    for (const part of inside.slice(1, -1).split(/[,，;；、/]/)) push(part);
+  }
+  return [...keys];
+}
+
+interface AliasGroup {
+  name: string;
+  aliases: string[];
+}
+
+type AliasFile = Partial<Record<EntityKind, AliasGroup[]>>;
+
+/** alias key → curated group, per kind; the file is read once per process. */
+let aliasCache: Partial<Record<EntityKind, Map<string, AliasGroup>>> | null = null;
+
+function aliasIndex(kind: EntityKind): Map<string, AliasGroup> {
+  if (!aliasCache) {
+    const loaded: Partial<Record<EntityKind, Map<string, AliasGroup>>> = {};
+    try {
+      const file = JSON.parse(readFileSync(path.join(REPO_ROOT, "industry/aliases.json"), "utf8")) as AliasFile;
+      for (const k of ENTITY_KINDS) {
+        const index = new Map<string, AliasGroup>();
+        for (const group of file[k] ?? []) {
+          for (const spelling of [group.name, ...group.aliases]) {
+            const key = letters(spelling);
+            if (key) index.set(key, group);
+          }
+        }
+        loaded[k] = index;
+      }
+    } catch {
+      // A missing or malformed alias file must not take the entity pages down: fall back to containment only.
+      for (const k of ENTITY_KINDS) loaded[k] = new Map();
+    }
+    aliasCache = loaded;
+  }
+  return aliasCache[kind] ?? new Map();
+}
 
 interface RawRow {
   id: string;
@@ -51,7 +111,7 @@ const toRow = (row: RawRow): TableRow => ({
   card: row.card as TableRow["card"],
 });
 
-interface Cluster {
+export interface Cluster {
   slug: string;
   name: string;
   /** Every spelling the cards use for this entity; pages query by these, not by the slug. */
@@ -59,10 +119,16 @@ interface Cluster {
   readouts: number;
 }
 
+/** One spelling as the cards wrote it, with how many readouts use it. */
+export interface Spelling {
+  name: string;
+  readouts: number;
+}
+
 /** Every spelling the listed cards use, with how many readouts use it. */
-async function spellings(kind: EntityKind, now: Date) {
+async function spellings(kind: EntityKind, now: Date): Promise<Spelling[]> {
   const field = FIELD[kind];
-  const rows = await sql<{ name: string; readouts: number }[]>`
+  const rows = await sql<Spelling[]>`
     SELECT btrim(a.output->'readout'->>${field}) AS name, count(*)::int AS readouts
     FROM publications p JOIN analyses a ON a.id = p.analysis_id
     WHERE ${browsedCondition(now)} AND NOT ${compositeCondition()} AND a.output ? 'readout'
@@ -72,14 +138,39 @@ async function spellings(kind: EntityKind, now: Date) {
   return rows.filter((r) => r.name.length > 0);
 }
 
-/** Spellings folded into one page each: a name joins the first cluster whose letters it shares. */
-export async function entityClusters(kind: EntityKind, now = new Date()): Promise<Cluster[]> {
-  const rows = await spellings(kind, now);
+/**
+ * Fold spellings into pages. Pure so the rule can be tested without a database. Curated spellings (those the
+ * alias table knows) each go to their group's page and never merge by containment — otherwise "KRAS G12C"
+ * would be swallowed by a "KRAS" page. Everything else falls back to containment among the uncurated.
+ */
+export function clusterSpellings(rows: readonly Spelling[], index: ReadonlyMap<string, AliasGroup>): Cluster[] {
   const clusters: Cluster[] = [];
+  const curated = new Map<string, Cluster>();
+  const loose: Spelling[] = [];
   for (const row of rows) {
+    const group = nameKeys(row.name)
+      .map((key) => index.get(key))
+      .find((hit): hit is AliasGroup => Boolean(hit));
+    if (!group) {
+      loose.push(row);
+      continue;
+    }
+    const slug = slugOf(group.name);
+    let hit = curated.get(slug);
+    if (!hit) {
+      hit = { slug, name: group.name, names: [], readouts: 0 };
+      curated.set(slug, hit);
+      clusters.push(hit);
+    }
+    hit.readouts += row.readouts;
+    if (!hit.names.includes(row.name)) hit.names.push(row.name);
+  }
+  for (const row of loose) {
     const key = letters(row.name);
     if (!key) continue;
     const hit = clusters.find((c) => {
+      // A curated page only takes the spellings its group lists; guessing would undo the table.
+      if (curated.has(c.slug)) return false;
       const other = letters(c.name);
       return other.includes(key) || key.includes(other);
     });
@@ -88,14 +179,19 @@ export async function entityClusters(kind: EntityKind, now = new Date()): Promis
       continue;
     }
     hit.readouts += row.readouts;
-    hit.names.push(row.name);
-    // The longest spelling stands for the entity: it is the one that still says what the short one means.
-    if (row.name.length > hit.name.length) {
+    if (!hit.names.includes(row.name)) hit.names.push(row.name);
+    // The longest spelling stands for the entity: it still says what the short one means.
+    if (!curated.has(hit.slug) && row.name.length > hit.name.length) {
       hit.name = row.name;
       hit.slug = slugOf(row.name);
     }
   }
   return clusters.sort((a, b) => b.readouts - a.readouts || a.name.localeCompare(b.name));
+}
+
+/** Spellings folded into one page each: the alias table first, then letter containment. */
+export async function entityClusters(kind: EntityKind, now = new Date()): Promise<Cluster[]> {
+  return clusterSpellings(await spellings(kind, now), aliasIndex(kind));
 }
 
 /** The entities mentioned by listed readouts, most-mentioned first. */
