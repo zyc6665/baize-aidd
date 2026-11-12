@@ -57,7 +57,7 @@ packages/ apps/    引擎本体
 
 ## 日常运维
 
-**加一个信源。** 先确认它拿得到东西——用框架自己的解析器预演一遍，返回 200、有条目、带日期才写进清单（`node scripts/preview-rss.mjs` 那种一次性脚本，跑完删掉）。然后写进 `industry/sources.json`，跑 `docker compose exec -T api node scripts/seed.ts`（只补新的，不动已有的）；只想试选择器就在后台「信源」页预览。
+**加一个信源。** 先确认它拿得到东西——用框架自己的解析器预演一遍，返回 200、有条目、带日期才写进清单（写个一次性脚本调 `previewSource`，跑完删掉）。然后写进 `industry/sources.json`，先重建再导入：`docker compose build api worker && docker compose up -d`，然后 `docker compose exec -T api node scripts/seed.ts`（只补新的，不动已有的）；最后 `node scripts/retune.ts` 对齐抓取间隔。**容器里的 `industry/sources.json` 是构建时拷进去的**，不重建就直接 seed，读到的是旧清单——这一点踩过。只想试选择器不用重建，在后台「信源」页预览就行。
 
 **抓取间隔是分层的。** 变化快的跑得勤，慢站别浪费请求：监管与公司官方 120–240 分钟，中文媒体 60–240，期刊与预印本 360–480，更新慢的站 480–720。`sources.json` 里的间隔对**已入库**的源不生效（seed 不覆盖已有行），改完要跑 `docker compose exec -T api node scripts/retune.ts` 同步；加 `--dry` 先看要改哪几个。现在 41 个源里最快的是药时代（60 分钟），最慢的是 Labiotech 与 Cradle 博客（720 分钟）。
 
