@@ -103,6 +103,8 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
   const [lead, ...rest] = issue.main;
   const highlights = rest.slice(0, DAILY_HIGHLIGHTS).map((e) => e.entry.itemId);
   const picks = lead ? await dailyPicks(date, start, end, [...issue.main, ...issue.flashes], DAILY_HIGHLIGHTS - highlights.length) : [];
+  // The window's stock-take, counted by rule: what the three tables recorded between yesterday and today.
+  const ledger = await periodLedger(start, end);
   const content = {
     date,
     lead: lead
@@ -116,6 +118,7 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
       .filter((s) => s.items.length > 0),
     flashes: issue.flashes.map((e) => e.entry),
     metrics: dailyMetrics(issue.main),
+    ...(ledgerIsEmpty(ledger) ? {} : { ledger }),
     windowStart: start.toISOString(),
     windowEnd: end.toISOString(),
     generator: { version: REPORT_VERSION, ...edition.stats, ...issue.stats },

@@ -126,6 +126,12 @@ function digestMail(email: string, token: string, report: ReportDetail) {
     }
     lines.push("");
   }
+  // The day's stock-take, so a reader who never opens the ledger pages still sees what got filled in.
+  if (report.ledger) {
+    const { deals, readouts, models } = report.ledger;
+    lines.push(`本期台账：交易 ${deals.count} 笔 · 临床读出 ${readouts.count} 条（阳性 ${readouts.positive}／阴性 ${readouts.negative}） · 模型卡 ${models.count} 张`);
+    lines.push("");
+  }
   const unsubscribe = `${base}/subscribe/unsubscribe?token=${encodeURIComponent(token)}`;
   lines.push(`本期：${base}/daily/${report.key}`);
   lines.push(`不想再收到：${unsubscribe}`);
@@ -151,6 +157,15 @@ function digestMail(email: string, token: string, report: ReportDetail) {
             }),
         ].join(""),
       ),
+      report.ledger
+        ? [
+            `<p style="margin:26px 0 0;padding-top:14px;border-top:1px solid #e0e2d9;color:#2b3a35">本期台账：`,
+            `<a href="${base}/deals" style="color:#17473a">交易 ${report.ledger.deals.count} 笔</a> · `,
+            `<a href="${base}/readouts" style="color:#17473a">临床读出 ${report.ledger.readouts.count} 条</a> · `,
+            `<a href="${base}/model-cards" style="color:#17473a">模型卡 ${report.ledger.models.count} 张</a>`,
+            `</p>`,
+          ].join("")
+        : "",
       `<p style="margin:28px 0 0;padding-top:14px;border-top:1px solid #e0e2d9;font-size:12px;color:#616f69">`,
       `<a href="${base}/daily/${report.key}" style="color:#4c6b5f">在网页上读这一期</a> · `,
       `<a href="${unsubscribe}" style="color:#4c6b5f">不想再收到</a>`,
