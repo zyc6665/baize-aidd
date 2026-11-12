@@ -151,7 +151,7 @@ test("bad admin input is a client error and never starts processing", async () =
   config.adminUnionIds = [claims.unionId];
   const binding = createHmac("sha256", process.env.SESSION_SECRET!).update(JSON.stringify(["admin-session-v1", "feishu", claims])).digest("hex");
   await sql`INSERT INTO admin_sessions (id_hash, user_id, csrf_token, expires_at, auth_method, auth_binding, auth_claims) VALUES (${sha256(token)}, ${user!.id}, 'review-csrf', now() + interval '1 hour', 'feishu', ${binding}, ${sql.json(claims)})`;
-  const headers = { cookie: `aihot_admin=${token}`, "x-csrf-token": "review-csrf", "idempotency-key": `invalid-${T}` };
+  const headers = { cookie: `baize_admin=${token}`, "x-csrf-token": "review-csrf", "idempotency-key": `invalid-${T}` };
   const source = await app.inject({ method: "POST", url: "/api/admin/sources", headers, payload: { id: "bad" } });
   assert.equal(source.statusCode, 400);
   const id = await article();

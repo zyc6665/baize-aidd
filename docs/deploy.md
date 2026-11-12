@@ -103,6 +103,8 @@ SITE_URL=https://cpumodel.online
 
 09:00 的那封系统日报也会带一行昨天的数字，所以不配飞书、不看后台，也能从邮件里看出趋势。
 
+表头上面还有一行备份状态：最近一次备份在多久之前、打了几个文件、有没有传上异地。写「只在本地，没配对象存储」时，`/data/backups/` 里只有最近三份，机器坏了就一起没了——把 `DB_BACKUP_STORE_SECRET_ID`、`DB_BACKUP_STORE_SECRET_KEY`、`DB_BACKUP_STORE_BUCKET`、`DB_BACKUP_STORE_REGION` 配齐，那行才会变成「已上传异地」。
+
 ## 更新
 
 拉新代码后重建，让 `setup` 把迁移跑完：

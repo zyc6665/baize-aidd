@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import type { Route } from "./+types/inspection";
 import type { AdminInspection } from "@aihot/contracts/admin";
 import { adminGet } from "../../lib/admin.server";
+import { ago, bj } from "../../features/admin/format";
 import { AdminPage, Card, DataTable, Empty, Stat } from "../../features/admin/ui";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -39,6 +40,12 @@ export default function InspectionAdmin({ loaderData }: Route.ComponentProps) {
           hint={drop > 0 ? `比昨天少 ${n(drop)} 条` : "与昨天持平或更多"}
         />
       </div>
+
+      <p className="mb-3 text-[12.5px] leading-[1.7] text-ink-4">
+        {loaderData.backup
+          ? `最近一次备份：${ago(loaderData.backup.at)}前（${bj(loaderData.backup.at)}）· ${loaderData.backup.objects} 个文件 · ${loaderData.backup.uploaded ? "已上传异地" : "只在本地，没配对象存储"}`
+          : "还没有备份记录：要么备份任务没跑过，要么上次就失败了。"}
+      </p>
 
       <Card>
         {days.length === 0 ? (

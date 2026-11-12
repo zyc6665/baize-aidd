@@ -30,13 +30,13 @@ test("an unrelated malformed cookie leaves a real admin session usable without a
   await sql`INSERT INTO admin_sessions (id_hash, user_id, csrf_token, expires_at, auth_method, auth_binding, auth_claims)
             VALUES (${sha256(token)}, ${user!.id}, 'cookie-test-csrf', now() + interval '1 hour', 'feishu', ${binding}, ${sql.json(claims)})`;
 
-  for (const cookie of ["unrelated=%", "aihot_admin=%; unrelated=%E0%A4", "aihot_admin=forged; unrelated=%"]) {
+  for (const cookie of ["unrelated=%", "baize_admin=%; unrelated=%E0%A4", "baize_admin=forged; unrelated=%"]) {
     const denied = await app.inject({ url: "/api/admin/me", headers: { cookie } });
     assert.equal(denied.statusCode, 401);
     assert.equal(denied.headers["cache-control"], "no-store");
   }
 
-  const headers = { cookie: `unrelated=%; aihot_admin=${token}; another=%E0%A4` };
+  const headers = { cookie: `unrelated=%; baize_admin=${token}; another=%E0%A4` };
   const me = await app.inject({ url: "/api/admin/me", headers });
   assert.equal(me.statusCode, 200);
   assert.equal(me.json().name, "Cookie test");

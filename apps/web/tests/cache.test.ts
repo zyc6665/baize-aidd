@@ -204,7 +204,7 @@ test("browser caching preserves noindex and private sign-in responses", async ()
 test("a signed-in admin is sent past the sign-in page", async () => {
   const api = fakeApi((url, res, req) => {
     if (url.pathname === "/api/admin/me") {
-      if (req.headers.cookie?.includes("aihot_admin=fixture")) return { name: "Fixture admin", csrf: "fixture", dev: false };
+      if (req.headers.cookie?.includes("baize_admin=fixture")) return { name: "Fixture admin", csrf: "fixture", dev: false };
       res.statusCode = 401;
       return { code: "unauthorized" };
     }
@@ -212,12 +212,12 @@ test("a signed-in admin is sent past the sign-in page", async () => {
   });
   const signedIn = await startWebServer(api);
   try {
-    const res = await fetch(`${signedIn.origin}/admin/login?return=%2Fadmin%2Fcontent`, { headers: { cookie: "aihot_admin=fixture" }, redirect: "manual" });
+    const res = await fetch(`${signedIn.origin}/admin/login?return=%2Fadmin%2Fcontent`, { headers: { cookie: "baize_admin=fixture" }, redirect: "manual" });
     assert.equal(res.status, 302);
     assert.equal(res.headers.get("location"), "/admin/content");
     await res.text();
     for (const [target, location] of [["javascript:alert(1)", SIGN_IN_HOME], ["//evil.example/admin", SIGN_IN_HOME], ["/x/..//evil.example", SIGN_IN_HOME], ["https://evil.example/admin", "/admin"], ["/free-preview", "/free-preview"]]) {
-      const away = await fetch(`${signedIn.origin}/admin/login?return=${encodeURIComponent(target!)}`, { headers: { cookie: "aihot_admin=fixture" }, redirect: "manual" });
+      const away = await fetch(`${signedIn.origin}/admin/login?return=${encodeURIComponent(target!)}`, { headers: { cookie: "baize_admin=fixture" }, redirect: "manual" });
       assert.equal(away.headers.get("location"), location, target);
       await away.text();
     }

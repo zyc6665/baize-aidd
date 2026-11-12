@@ -1,4 +1,4 @@
-﻿// Daily inspection: what came in, what got judged, what got published, which cards were filled,
+// Daily inspection: what came in, what got judged, what got published, which cards were filled,
 // and how the paid calls went 鈥?one row per Beijing day, so a slow drift shows up as a number
 // instead of being noticed a week later.
 import type { AdminInspection, AdminInspectionDay, BeforeJson } from "@aihot/contracts/admin";
@@ -64,11 +64,21 @@ export async function inspectionOverview(days = 7, now = Date.now()): Promise<Be
   const list = rows.map(day);
   // Days before the site had anything to say are not rows: drop trailing all-zero days, newest first.
   while (list.length > 1 && empty(list[list.length - 1]!)) list.pop();
+
+  // Backups announce themselves in settings; a backup that stops leaves the last one standing here.
+  type Saved = { at?: string; uploaded?: boolean; objects?: unknown[] };
+  const [saved] = await sql<{ value: Saved | null }[]>`SELECT value FROM settings WHERE key = 'backup.last'`;
+  const last = saved?.value ?? null;
+  const backup = last?.at
+    ? { at: last.at, uploaded: Boolean(last.uploaded), objects: Array.isArray(last.objects) ? last.objects.length : 0 }
+    : null;
+
   return {
     days: list,
     window: list.length,
     // Today is still filling up, so the averages leave it out.
     averages: average(list.slice(1).length > 0 ? list.slice(1) : list),
+    backup,
   };
 }
 

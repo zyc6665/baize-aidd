@@ -473,4 +473,6 @@ export interface AdminInspection {
   days: AdminInspectionDay[];
   window: number;
   averages: { collected: number; judged: number; selected: number; published: number };
+  /** The last backup the worker made, so "backups run" is a fact here instead of a hope. */
+  backup: { at: string; uploaded: boolean; objects: number } | null;
 }
