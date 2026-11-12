@@ -22,6 +22,7 @@ import { agentConfigured, agentTransportFindings, flushAgentEvents, handoffs, wa
 import { duration, formatAlert, formatRecovery, formatReturn, sendAlert, type Finding, type Level } from "../notify/feishu.ts";
 import { stepsOnService } from "../editorial/models.ts";
 import { backupConfigured } from "./backup.ts";
+import { inspectionOverview } from "./inspection.ts";
 import { GROUPING_WARN_AFTER_MS, waitingSelectedNews } from "./grouping.ts";
 import { upstreamFindings } from "../media/upstream.ts";
 import { serverModules } from "../modules.ts";
@@ -715,11 +716,16 @@ export async function sendDigest(now = Date.now()) {
   if (lapsed.length) await sql`UPDATE settings SET value = value - ${sql.array(lapsed)}::text[], updated_at = now() WHERE key = 'alerts.dismissed'`;
   const items = found.filter((f) => !dismissed[f.key] && !f.agentOnly);
   const lines = items.map((f, i) => `${i + 1}. ${f.title}${f.detail ? `\n   ${f.detail}` : ""}`);
+  // The numbers come along with the list: a day that looks fine in prose but halved in volume shows up here.
+  const [, day] = (await inspectionOverview(2, now)).days;
+  const numbers = day
+    ? `📊 昨天（${day.day}）：新进 ${day.collected} · 判分 ${day.judged} · 精选 ${day.selected} · 发布 ${day.published} · 卡片 ${day.deals}/${day.readouts}/${day.models}`
+    : null;
   // Once the hub has the list, the agent works through it alone and passes on what is still the owner's. Without
   // an agent, or when the list did not get through, the owner gets it as before.
   const taken = found.some(f => !dismissed[f.key]) && await wakeDigest(beijingDate(now), lines.length || found.length);
   const toldOwner = lines.length > 0 && !taken;
-  if (toldOwner) await sendAlert(`📋 系统日报 · ${beijingDay(now)}`, ["以下事项需要跟进，具体影响见各条说明；可把整条转给 AI 处理。", ...lines]);
+  if (toldOwner) await sendAlert(`📋 系统日报 · ${beijingDay(now)}`, [...(numbers ? [numbers] : []), "以下事项需要跟进，具体影响见各条说明；可把整条转给 AI 处理。", ...lines]);
   await flushAgentEvents();
   return { items: lines.length, toldOwner };
 }

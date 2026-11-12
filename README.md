@@ -67,7 +67,7 @@ packages/ apps/    引擎本体
 
 **换模型或改评分提示词前先跑校准。** `scripts/eval-selection.ts` 配 `.data/gold.jsonl`（格式见 `industry/gold.example.jsonl`）。2026-11 这次校准的结论是：这个评分模型给分偏保守（真事 40–60，噪声 12–30），所以门槛从 50/55/65 降到 36/38/40（媒体门槛仍高于官方，代价是 T2 召回约 70%），T1 召回从 26% 拉到 100%。换了模型就必须重跑。标注样本存在 `industry/gold.jsonl`，`npm run check:gold` 会先检查它的格式（CI 每次都跑），再跑 `scripts/eval-selection.ts` 出分。
 
-**看哪里出问题。** 后台「运行」页有任务、队列、失败信源与需要人工核对的回执；「待跟进」页是系统自己发现的问题清单（09:00 日报发的是同一份），没配飞书或 webhook 时只有这一页能看到；`docker compose logs -f worker` 是原始日志。
+**看哪里出问题。** 后台「运行」页有任务、队列、失败信源与需要人工核对的回执；「待跟进」页是系统自己发现的问题清单（09:00 日报发的是同一份），没配飞书或 webhook 时只有这一页能看到；「巡检」页按天列出新进、判分、过筛、精选、发布、卡片和付费失败次数——某个数字连着三天往下掉，就是那里出事了。`docker compose logs -f worker` 是原始日志。
 
 **读者订阅（邮件日报）。** `/subscribe` 收集邮箱，订阅者收到确认信、点链接确认后，每天 08:20 收到当天日报的邮件（`ops.subscribers`）。发信走 `MAIL_API_URL` / `MAIL_API_KEY` / `MAIL_FROM` 三项配置的 HTTP 接口（任何事务邮件服务都行）；三项没配时流程照常走，但信只会写进容器里的 `/data/mail/`，本机调试就靠它看排版和链接。确认链接 7 天有效，退订链接一下即退（`subscribers.unsubscribed_at`），退订后再订阅要重新确认一次。
 

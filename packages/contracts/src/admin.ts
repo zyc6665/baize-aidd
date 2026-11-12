@@ -453,3 +453,24 @@ export interface AdminFollowUps {
   items: AdminFollowUp[];
   checkedAt: string;
 }
+
+/** One Beijing day of the daily inspection: what came in, got judged, got published, filled a card, or failed. */
+export interface AdminInspectionDay {
+  day: string;
+  collected: number;
+  published: number;
+  judged: number;
+  passed: number;
+  selected: number;
+  deals: number;
+  readouts: number;
+  models: number;
+  receipts: number;
+  failed: number;
+}
+
+export interface AdminInspection {
+  days: AdminInspectionDay[];
+  window: number;
+  averages: { collected: number; judged: number; selected: number; published: number };
+}

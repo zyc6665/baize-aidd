@@ -15,6 +15,7 @@ import { requeueFailedArticles, runsOverview } from "@aihot/backend/admin/runs";
 import { resolveDelivery } from "@aihot/backend/notify/deliver";
 import { releaseReceipt } from "@aihot/backend/operations/recover";
 import { openFollowUps } from "@aihot/backend/operations/alerts";
+import { inspectionOverview } from "@aihot/backend/operations/inspection";
 import { replaceContactQr, setTargetEnabled, settingsOverview, updateBudget } from "@aihot/backend/admin/settings";
 import { createSource, fetchNow, listSources, previewSource, previewStoredSource, sourceDetail, updateSource } from "@aihot/backend/admin/sources";
 import { sendProblem } from "../http/respond.ts";
@@ -96,6 +97,7 @@ export function registerAdmin(app: FastifyInstance) {
   // Runs
   app.get("/api/admin/runs", adminHandler(async () => runsOverview()));
   app.get("/api/admin/followups", adminHandler(async () => ({ items: await openFollowUps(), checkedAt: new Date().toISOString() })));
+  app.get("/api/admin/inspection", adminHandler(async (req) => inspectionOverview(Number((req.query as { days?: string }).days ?? 7))));
   app.post("/api/admin/receipts/:id/release", adminHandler(async (req, reply, admin) => orNotFound(req, reply, await releaseReceipt(Number(param(req, "id")), body(req) as never, actorOf(admin)))));
   app.post("/api/admin/deliveries/:id/resolve", adminHandler(async (req, reply, admin) => orNotFound(req, reply, await resolveDelivery(Number(param(req, "id")), body(req) as never, actorOf(admin)))));
   app.post("/api/admin/processing/requeue", adminHandler(async (req, _reply, admin) => requeueFailedArticles(body(req) as never, actorOf(admin))));
