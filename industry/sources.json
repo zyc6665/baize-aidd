@@ -1,5 +1,5 @@
 {
-  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。这里的源都在 2026-11 实测可用（返回 200 且有条目）；Fierce、GEN、BioSpace、NMPA、CDE、EMA、ChemRxiv、arXiv 的 rss 都拿不到，不要直接加回来。抓取间隔按「谁变得快」分层：监管与公司官方 120–240 分钟，中文媒体 60–240，期刊与预印本 360–480，更新慢的站 480–720。新增源前先用框架自己的解析器预演一次：没有条目或返回 403 的就别留在清单里——Pharmaceutical Executive 与 Cell Chemical Biology 就是这样被筛掉的。",
+  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。这里的源都在 2026-11 实测可用（返回 200 且有条目）；Fierce、BioSpace、NMPA、CDE、EMA、ChemRxiv 与期刊自己的 rss 都拿不到，不要直接加回来（GEN 与 Nature 的 rss 后来又能用了）。抓取间隔按「谁变得快」分层：监管与公司官方 120–240 分钟，中文媒体 60–240，期刊与预印本 360–480，更新慢的站 480–720。新增源前先用框架自己的解析器预演一次：没有条目或返回 403 的就别留在清单里——Pharmaceutical Executive 与 Cell Chemical Biology 就是这样被筛掉的。",
   "sources": [
     {
       "id": "rss-biorxiv",
@@ -801,6 +801,77 @@
       "tags": [
         "公司",
         "抗体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-biorxiv-pharmtox",
+      "name": "bioRxiv 药理与毒理",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://connect.biorxiv.org/biorxiv_xml.php?subject=pharmacology_and_toxicology",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "预印本",
+        "药理学"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nature-comp-sci",
+      "name": "Nature Computational Science",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nature.com/natcomputsci.rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊",
+        "计算方法"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-vbdata-intel",
+      "name": "动脉网 · 资讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.vbdata.cn/",
+        "itemSelector": ".main-list-item",
+        "linkSelector": "a[href*='/intelDetail/']",
+        "titleSelector": ".title-content",
+        "publishedAtRegex": "(20\\d{2}-\\d{2}-\\d{2})",
+        "allowUrlPrefixes": [
+          "https://www.vbdata.cn/intelDetail/"
+        ],
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "媒体",
+        "融资"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

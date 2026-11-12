@@ -1,6 +1,6 @@
 # 信源
 
-白泽智药盯的是 AI 药物研发：结构预测与分子生成的新模型、管线的临床读出、监管决定、交易与合作。本站清单里有 38 个信源，在后台「信源」页里看得见、改得动；`industry/sources.json` 只是首次部署时导入的清单，之后以库里的行为准。
+白泽智药盯的是 AI 药物研发：结构预测与分子生成的新模型、管线的临床读出、监管决定、交易与合作。本站清单里有 41 个信源，在后台「信源」页里看得见、改得动；`industry/sources.json` 只是首次部署时导入的清单，之后以库里的行为准。
 
 信源决定这个站的下限：源选错了，后面的筛选、写作、归组都救不回来。下面按「现在跑什么」→「六种收法」→「加源前怎么验」→「怎么上库和调间隔」写。
 
@@ -8,11 +8,11 @@
 
 | 门类 | 在跑的源 | 抓取间隔 |
 |---|---|---|
-| 期刊与预印本（13） | Nature 系 10 个（Nature、Nature Biotechnology、Nature Machine Intelligence、Nature Reviews Drug Discovery、Nature Methods、npj Drug Discovery、npj Digital Medicine、Nature 的计算生物学/机器学习/药物发现三个主题源）、bioRxiv、medRxiv、arXiv q-bio | 180–360 分钟 |
+| 期刊与预印本（15） | Nature 系 11 个（Nature、Nature Biotechnology、Nature Machine Intelligence、Nature Reviews Drug Discovery、Nature Methods、Nature Computational Science、npj Drug Discovery、npj Digital Medicine、Nature 的计算生物学/机器学习/药物发现三个主题源）、bioRxiv（全部、生物信息、药理与毒理）、medRxiv、arXiv q-bio | 180–360 分钟 |
 | 监管（3） | FDA 新闻稿、FDA 药品新闻、FDA MedWatch 安全通告 | 180–360 分钟 |
 | 公司一手与机构（9） | Google DeepMind、NVIDIA 生成式 AI、Microsoft Research、晶泰科技、AbCellera、Cradle、Broad Institute、Chan Zuckerberg Biohub、MIT News · AI | 120–720 分钟 |
 | 产业媒体（10） | STAT、Endpoints、BioPharma Dive、PharmaVoice、Labiotech、GEN、PharmaTimes、Science News、药时代、Owl Posting | 60–480 分钟 |
-| 中文站（3） | 中国食品药品网 · 新药研发、生物谷资讯、药智网新闻 | 120–240 分钟 |
+| 中文站（4） | 中国食品药品网 · 新药研发、生物谷资讯、药智网新闻、动脉网 · 资讯 | 120–240 分钟 |
 
 选源的理由：
 
