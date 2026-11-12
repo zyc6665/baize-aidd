@@ -1,0 +1,31 @@
+✔ reports assign delayed and boundary releases to the period readers first see them (427.042504ms)
+✔ a release waiting for the article lock uses the time after the cutoff (81.219055ms)
+✔ a release waiting for the fact seat lock uses the time after the cutoff (77.009752ms)
+✔ a release waiting for the report snapshot lock uses the time after the cutoff (49.25843ms)
+{"level":"info","msg":"queue drain","phase":"start","elapsedMs":0,"count":0,"jobs":[]}
+✔ daily composition waits for a pre-cutoff release to commit instead of losing it between issues (70.532744ms)
+{"level":"info","msg":"queue drain","phase":"complete","elapsedMs":12,"count":0,"jobs":[]}
+▶ issue numbers count the whole series across the navigation's 400-issue limit
+  ✔ 405 dailies are numbered up to 405 while the navigation keeps 400 (21.393409ms)
+  ✔ the index, detail, navigation, latest page and month answers give the same number (118.578983ms)
+  ✔ new issues and revisions leave older numbers alone (35.013223ms)
+  ✔ weeklies and monthlies are numbered on their own (33.893314ms)
+  ✔ an issue added or deleted before another moves its number (21.093692ms)
+✔ issue numbers count the whole series across the navigation's 400-issue limit (283.256452ms)
+✔ a late run writes the issue that was due, not today's (2.384912ms)
+✔ a daily with nothing judged in its window is refused, not published as a quiet day (63.015488ms)
+✔ a weekly that froze no summaries shows the articles' public summaries (105.638802ms)
+✔ an address is trimmed and lower-cased, and obvious junk is refused (1.086332ms)
+✔ a subscription starts unconfirmed, and the mailed link is the only way to confirm it (43.588828ms)
+✔ asked twice in two minutes, the second request is refused instead of mailing again (13.12777ms)
+✔ unsubscribing takes one click and needs no password (13.281306ms)
+✔ an unknown or malformed token changes nothing (1.058576ms)
+✔ a day with no issue sends nothing at all (12.617872ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25529.140916

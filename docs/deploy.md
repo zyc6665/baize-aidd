@@ -105,6 +105,24 @@ SITE_URL=https://cpumodel.online
 
 表头上面还有一行备份状态：最近一次备份在多久之前、打了几个文件、有没有传上异地。写「只在本地，没配对象存储」时，`/data/backups/` 里只有最近三份，机器坏了就一起没了——把 `DB_BACKUP_STORE_SECRET_ID`、`DB_BACKUP_STORE_SECRET_KEY`、`DB_BACKUP_STORE_BUCKET`、`DB_BACKUP_STORE_REGION` 配齐，那行才会变成「已上传异地」。
 
+## 把告警送到手机上
+
+系统自己发现的问题（信源连续抓不到、模型开始拒绝、日报没生成、备份失败、队列积压……）走三个出口，任选其一：
+
+1. **飞书群机器人**：`FEISHU_ALERT_WEBHOOK_URL` 填机器人的地址，`FEISHU_INTERNAL_ENABLED=true`。
+2. **钉钉机器人**：用后台「通知目标」里加一个钉钉目标，填 webhook 与加签密钥。
+3. **自己的接收端**：填 `WEBHOOK_HUB_URL` 和 `WEBHOOK_HUB_KEY`，系统会把每条消息 POST 到 `<WEBHOOK_HUB_URL>/tell`：
+
+```json
+{ "key": "alert-20261113-8f3c1a", "text": "🔴 主题一行\n第二行：数字\n第三行：链接" }
+```
+
+请求头带 `Authorization: Bearer <WEBHOOK_HUB_KEY>`，返回 200 就算送达；返回别的状态码，系统会把这条转去飞书群（如果配了），并发日志告警。所以企业微信群机器人、自建转发、甚至一个 `curl` 落盘的小服务都能接——只有一件事要满足：**认 `POST /tell` 和 `{key,text}` 这两个约定**，`key` 用来去重，别扔。
+
+不想先写代码，就先在本机看一眼：`node scripts/alert-hub.ts` 起一个只打印不转发的接收端，把 `WEBHOOK_HUB_URL` 指到 `http://127.0.0.1:4589`（容器里跑就写 `http://host.docker.internal:4589`），`FEISHU_INTERNAL_ENABLED=true`，等一条告警出来看格式对不对，再去接真正的群机器人。
+
+不配任何出口时，告警只写进日志和后端「待跟进」页；09:00 那封系统日报照样会发（邮件出口），所以最低成本的兜底是配 `MAIL_*`。
+
 ## 更新
 
 拉新代码后重建，让 `setup` 把迁移跑完：
