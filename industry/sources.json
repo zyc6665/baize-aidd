@@ -875,6 +875,298 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cell-patterns",
+      "name": "Patterns（Cell Press）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=patterns",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊",
+        "数据"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cell-systems",
+      "name": "Cell Systems",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=cels",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊",
+        "计算方法"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cell-med",
+      "name": "Med（Cell Press）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=medj",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊",
+        "临床"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cell-chem",
+      "name": "Chem（Cell Press）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=chempr",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "期刊",
+        "化学"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-jmir",
+      "name": "JMIR 数字医疗",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.jmir.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "期刊",
+        "临床"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-jitc",
+      "name": "Journal for ImmunoTherapy of Cancer",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://jitc.bmj.com/rss/current.xml",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "期刊",
+        "临床"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-google-research",
+      "name": "Google Research 博客",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://research.google/blog/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "公司",
+        "研究"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-insitro",
+      "name": "insitro",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.insitro.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "公司",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-pharmafile",
+      "name": "PharmaFile",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.pharmafile.com/rss",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-pharmaceutical-technology",
+      "name": "Pharmaceutical Technology",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.pharmaceutical-technology.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-clinicaltrialsarena",
+      "name": "Clinical Trials Arena",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.clinicaltrialsarena.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [
+        "媒体",
+        "临床"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-biotechniques",
+      "name": "BioTechniques",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.biotechniques.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "期刊",
+        "实验方法"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-medcitynews",
+      "name": "MedCity News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.medcitynews.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "媒体",
+        "融资"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-manufacturingchemist",
+      "name": "Manufacturing Chemist",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.manufacturingchemist.com/rss",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "媒体",
+        "产业"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }
