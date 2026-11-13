@@ -877,132 +877,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-cell-patterns",
-      "name": "Patterns（Cell Press）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=patterns",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1_5",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 360,
-      "tags": [
-        "期刊",
-        "数据"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-cell-systems",
-      "name": "Cell Systems",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=cels",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1_5",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 360,
-      "tags": [
-        "期刊",
-        "计算方法"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-cell-med",
-      "name": "Med（Cell Press）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=medj",
-        "_aihot": {
-          "initialBackfillLimit": 6
-        }
-      },
-      "tier": "T1_5",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 360,
-      "tags": [
-        "期刊",
-        "临床"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-cell-chem",
-      "name": "Chem（Cell Press）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=chempr",
-        "_aihot": {
-          "initialBackfillLimit": 6
-        }
-      },
-      "tier": "T1_5",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 480,
-      "tags": [
-        "期刊",
-        "化学"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-jmir",
-      "name": "JMIR 数字医疗",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.jmir.org/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1_5",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 480,
-      "tags": [
-        "期刊",
-        "临床"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-jitc",
-      "name": "Journal for ImmunoTherapy of Cancer",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://jitc.bmj.com/rss/current.xml",
-        "_aihot": {
-          "initialBackfillLimit": 6
-        }
-      },
-      "tier": "T1_5",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 720,
-      "tags": [
-        "期刊",
-        "临床"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-google-research",
       "name": "Google Research 博客",
       "kind": "rss",
@@ -1166,6 +1040,48 @@
         "产业"
       ],
       "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-plos-compbiol",
+      "name": "PLOS Computational Biology",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://journals.plos.org/ploscompbiol/feed/atom",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊",
+        "计算方法"
+      ],
+      "site_fulltext": true,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-plos-digitalhealth",
+      "name": "PLOS Digital Health",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://journals.plos.org/digitalhealth/feed/atom",
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "期刊",
+        "临床"
+      ],
+      "site_fulltext": true,
       "syndicate_fulltext": false
     }
   ]

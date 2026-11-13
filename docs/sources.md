@@ -1,6 +1,6 @@
 # 信源
 
-白泽智药盯的是 AI 药物研发：结构预测与分子生成的新模型、管线的临床读出、监管决定、交易与合作。本站清单里有 55 个信源，在后台「信源」页里看得见、改得动；`industry/sources.json` 只是首次部署时导入的清单，之后以库里的行为准。
+白泽智药盯的是 AI 药物研发：结构预测与分子生成的新模型、管线的临床读出、监管决定、交易与合作。本站清单里有 51 个信源，在后台「信源」页里看得见、改得动；`industry/sources.json` 只是首次部署时导入的清单，之后以库里的行为准。
 
 信源决定这个站的下限：源选错了，后面的筛选、写作、归组都救不回来。下面按「现在跑什么」→「六种收法」→「加源前怎么验」→「怎么上库和调间隔」写。
 
@@ -8,7 +8,7 @@
 
 | 门类 | 在跑的源 | 抓取间隔 |
 |---|---|---|
-| 期刊与预印本（22） | Nature 系 11 个（Nature、Nature Biotechnology、Nature Machine Intelligence、Nature Reviews Drug Discovery、Nature Methods、Nature Computational Science、npj Drug Discovery、npj Digital Medicine、Nature 的计算生物学/机器学习/药物发现三个主题源）、bioRxiv（全部、生物信息、药理与毒理）、medRxiv、arXiv q-bio、Cell Press 四刊（Patterns、Cell Systems、Med、Chem）、JMIR、JITC、BioTechniques | 180–720 分钟 |
+| 期刊与预印本（18） | Nature 系 11 个（Nature、Nature Biotechnology、Nature Machine Intelligence、Nature Reviews Drug Discovery、Nature Methods、Nature Computational Science、npj Drug Discovery、npj Digital Medicine、Nature 的计算生物学/机器学习/药物发现三个主题源）、bioRxiv（全部、生物信息、药理与毒理）、medRxiv、arXiv q-bio、PLOS Computational Biology、PLOS Digital Health、BioTechniques | 180–720 分钟 |
 | 监管（3） | FDA 新闻稿、FDA 药品新闻、FDA MedWatch 安全通告 | 180–360 分钟 |
 | 公司一手与机构（11） | Google DeepMind、Google Research、NVIDIA 生成式 AI、Microsoft Research、晶泰科技、AbCellera、Cradle、insitro、Broad Institute、Chan Zuckerberg Biohub、MIT News · AI | 120–720 分钟 |
 | 产业媒体（15） | STAT、Endpoints、BioPharma Dive、PharmaVoice、Labiotech、GEN、PharmaTimes、PharmaFile、Pharmaceutical Technology、Clinical Trials Arena、MedCity News、Manufacturing Chemist、Science News、药时代、Owl Posting | 60–720 分钟 |
@@ -22,13 +22,15 @@
 - **产业媒体**提供背景、引语和行业反应，也常常比一手发布早几小时（STAT、Endpoints 尤其快）。
 - **中文站**补国内审评、临床与产业动态，英文源覆盖不到。
 
-清单里没有 Fierce、BioSpace、NMPA、CDE、EMA、ChemRxiv：它们的订阅或列表拿不到可用条目，别按印象加回来。Nature 新开的几个子刊订阅地址对本站的爬虫 UA 会返回一个 3 KB 的 HTML 拦截页（`https://www.nature.com/natchemeng.rss` 等），所以没加；Cell Press 反而走得通——它的订阅藏在 `https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=<代码>` 后面，`jc` 是刊名缩写（`patterns`、`cels`、`medj`、`chempr`），换刊只换这一段。
+清单里没有 Fierce、BioSpace、NMPA、CDE、EMA、ChemRxiv：它们的订阅或列表拿不到可用条目，别按印象加回来。Nature 新开的几个子刊订阅地址对本站的爬虫 UA 会返回一个 3 KB 的 HTML 拦截页（`https://www.nature.com/natchemeng.rss` 等），所以没加。
+
+有两类源**订阅能读、正文读不出来**，加进来只会让条目卡在「等待抽取」：Cell Press 系（`https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=<刊名缩写>`，`patterns`、`cels`、`medj`、`chempr` 都能出条目）、JMIR 与 JITC。它们的文章页要么付费墙、要么整页由脚本渲染，直连抓不到正文，框架会退到 Jina Reader，而 Jina 需要 `JINA_API_KEY`（按请求计费）——没配就会报 `extract: JINA_API_KEY is not configured`，条目停在 `processing_state='new'` 里反复重试。要用这几家，先配 Jina 的 key，再跑一次 `docker compose exec -T api node scripts/retune.ts`；否则别加，宁愿少一个源也不要一堆卡住的条目。
 
 ## 六种信源
 
 | kind | 用来收什么 | 本站 |
 |---|---|---|
-| `rss` | 有稳定订阅源的媒体、期刊、公司博客 | 50 个，主力 |
+| `rss` | 有稳定订阅源的媒体、期刊、公司博客 | 46 个，主力 |
 | `web_list` | 只有列表页、没有 RSS 的站 | 5 个 |
 | `json_list` | 接口返回 JSON 的站 | 暂未使用 |
 | `x_search` | 按关键词或账号搜 X | 暂未使用（需要 SocialData 的 key） |
