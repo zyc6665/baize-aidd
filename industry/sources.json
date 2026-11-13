@@ -1083,6 +1083,38 @@
       ],
       "site_fulltext": true,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "api-europepmc",
+      "name": "Europe PMC · AI 药物研发文献",
+      "kind": "json_list",
+      "config": {
+        "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(TITLE_ABS%3A%22machine%20learning%22%20OR%20TITLE_ABS%3A%22deep%20learning%22%20OR%20TITLE_ABS%3A%22artificial%20intelligence%22%20OR%20TITLE_ABS%3A%22large%20language%20model%22%20OR%20TITLE_ABS%3A%22foundation%20model%22)%20AND%20(TITLE_ABS%3A%22drug%20discovery%22%20OR%20TITLE_ABS%3A%22drug%20design%22%20OR%20TITLE_ABS%3A%22target%20identification%22%20OR%20TITLE_ABS%3A%22molecular%20docking%22%20OR%20TITLE_ABS%3A%22virtual%20screening%22%20OR%20TITLE_ABS%3A%22ADMET%22%20OR%20TITLE_ABS%3A%22protein%20structure%20prediction%22%20OR%20TITLE_ABS%3A%22molecular%20generation%22%20OR%20TITLE_ABS%3A%22antibody%20design%22%20OR%20TITLE_ABS%3A%22clinical%20trial%22%20OR%20TITLE_ABS%3A%22drug%20repurposing%22%20OR%20TITLE_ABS%3A%22hit%20discovery%22)%20AND%20SRC%3AMED%20AND%20HAS_ABSTRACT%3AY%20AND%20(PUB_TYPE%3A%22Journal%20Article%22%20OR%20PUB_TYPE%3A%22Preprint%22)&format=json&pageSize=30&sort=P_PDATE_D%20desc&resultType=core",
+        "itemsPath": "resultList.result",
+        "titlePaths": [
+          "title"
+        ],
+        "summaryPaths": [
+          "abstractText"
+        ],
+        "summaryIsBody": true,
+        "authorPaths": [
+          "authorString"
+        ],
+        "publishedAtPath": "firstPublicationDate",
+        "externalIdPath": "id",
+        "urlTemplate": "https://europepmc.org/article/{source}/{id}",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 480,
+      "tags": [],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

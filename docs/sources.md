@@ -1,6 +1,6 @@
 # 信源
 
-白泽智药盯的是 AI 药物研发：结构预测与分子生成的新模型、管线的临床读出、监管决定、交易与合作。本站清单里有 51 个信源，在后台「信源」页里看得见、改得动；`industry/sources.json` 只是首次部署时导入的清单，之后以库里的行为准。
+白泽智药盯的是 AI 药物研发：结构预测与分子生成的新模型、管线的临床读出、监管决定、交易与合作。本站清单里有 52 个信源，在后台「信源」页里看得见、改得动；`industry/sources.json` 只是首次部署时导入的清单，之后以库里的行为准。
 
 信源决定这个站的下限：源选错了，后面的筛选、写作、归组都救不回来。下面按「现在跑什么」→「六种收法」→「加源前怎么验」→「怎么上库和调间隔」写。
 
@@ -26,13 +26,41 @@
 
 有两类源**订阅能读、正文读不出来**，加进来只会让条目卡在「等待抽取」：Cell Press 系（`https://www.cell.com/action/showFeed?type=etoc&feed=rss&jc=<刊名缩写>`，`patterns`、`cels`、`medj`、`chempr` 都能出条目）、JMIR 与 JITC。它们的文章页要么付费墙、要么整页由脚本渲染，直连抓不到正文，框架会退到 Jina Reader，而 Jina 需要 `JINA_API_KEY`（按请求计费）——没配就会报 `extract: JINA_API_KEY is not configured`，条目停在 `processing_state='new'` 里反复重试。要用这几家，先配 Jina 的 key，再跑一次 `docker compose exec -T api node scripts/retune.ts`；否则别加，宁愿少一个源也不要一堆卡住的条目。
 
+## 文献库：PubMed 自己接不了，Europe PMC 可以
+
+PubMed 页面上的「RSS」是 Saved Search 生成的，地址形如 `https://pubmed.ncbi.nlm.nih.gov/rss/search/<一次性ID>/?limit=100&format=rss`：那个 ID 由账号里的检索式生成，换台机器、换个人就没有；直接拼 `?term=…&format=rss` 返回的是 HTML 页面而不是订阅（`<!DOCTYPE html>`）。PubMed 另一条路是 E-utilities（`esearch` 拿 ID、`esummary` 拿条目），两步式接口，`json_list` 一次请求拿不到。
+
+**Europe PMC 是同一个库的开放接口**：它收录 PubMed 的全部记录（`SRC:MED`）、并把摘要、DOI、期刊、出版日期一起给出，还有预印本。本站用 `json_list` 接了这一条（`api-europepmc`，T1_5、480 分钟）：
+
+```json
+{
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=<检索式>&format=json&pageSize=30&sort=P_PDATE_D%20desc&resultType=core",
+  "itemsPath": "resultList.result",
+  "titlePaths": ["title"],
+  "summaryPaths": ["abstractText"],
+  "summaryIsBody": true,
+  "authorPaths": ["authorString"],
+  "publishedAtPath": "firstPublicationDate",
+  "externalIdPath": "id",
+  "urlTemplate": "https://europepmc.org/article/{source}/{id}"
+}
+```
+
+三件事值得记住：
+
+- `resultType=core` 才带 `abstractText`；`lite` 只有标题和期刊。`summaryIsBody: true` 表示摘要直接当正文用——**文献类源一律这样接**，不去抓文章页，就不会撞付费墙、不会卡在 Jina。
+- 检索式写在 URL 里，改检索式就是改源：本站现在用的是「AI 术语 AND 药物研发术语 AND `SRC:MED` AND `HAS_ABSTRACT:Y`」，只收有摘要的。想放宽就删掉一两个 `TITLE_ABS:` 条件，但抓到的条数会跟着涨（这个检索式现在命中一万多条，每次只取最新 30 条）。
+- `publishedAtPath` 取 `firstPublicationDate`。少数图书章节没有这个字段，框架会当作「没有写时间」按发现时间入库，看起来像新文——遇到这种条目分数通常很低，不会进精选。
+
+其他文献平台在同一轮探测里的结论：OpenAlex（`api.openalex.org/works`）和 Crossref（`api.crossref.org/works`）只给元数据、不给摘要，接进来会变成一堆只有标题的条目，正文又得去撞付费墙；Semantic Scholar 不带 key 直接 429；ChemRxiv 的接口在 Cloudflare 后面（403）；bioRxiv / medRxiv 的 details 接口能读出条目和摘要，但和已经在跑的 RSS 重复；arXiv 的 Atom 接口（`https://export.arxiv.org/api/query?...`）可用，同样和 `rss-arxiv-qbio` 重复。真要多接，优先给 OpenAlex 配一个「只收开放获取、有摘要」的检索式。
+
 ## 六种信源
 
 | kind | 用来收什么 | 本站 |
 |---|---|---|
 | `rss` | 有稳定订阅源的媒体、期刊、公司博客 | 46 个，主力 |
 | `web_list` | 只有列表页、没有 RSS 的站 | 5 个 |
-| `json_list` | 接口返回 JSON 的站 | 暂未使用 |
+| `json_list` | 接口返回 JSON 的站 | 1 个（Europe PMC，见下） |
 | `x_search` | 按关键词或账号搜 X | 暂未使用（需要 SocialData 的 key） |
 | `mp_account` | 微信公众号 | 暂未使用（需要 Dajiala 的 key） |
 | `external` | 自己的脚本或爬虫推过来 | 暂未使用（需要 `INGEST_TOKEN`） |
