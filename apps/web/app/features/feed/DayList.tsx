@@ -6,14 +6,31 @@ import type { FeedItemSummary } from "@aihot/contracts/site";
 import { IconChevronRight } from "../../components/icons";
 import { beijingDate } from "@aihot/contracts/time";
 import { byBeijingDay } from "../../lib/format";
-import { markRead, useReadSet } from "../../lib/local-state";
+import { markRead, useReadSet, useRoleKey } from "../../lib/local-state";
+import { roleOf, roleRank } from "@aihot/site/roles";
 import { DayHeader, TimelineSlot } from "./Timeline";
 import { FeedItem } from "./FeedItem";
 
-export function DayList({ items, todayCount = null, headerAside }: { items: FeedItemSummary[]; todayCount?: number | null; headerAside?: React.ReactNode }) {
+/**
+ * A page of reports grouped by Beijing day. `roleOrder` says whether the reader's chosen role reorders
+ * each day — the home timeline and 全部动态 do, search results and topic pages keep their own order.
+ */
+export function DayList({ items, todayCount = null, headerAside, roleOrder = false }: { items: FeedItemSummary[]; todayCount?: number | null; headerAside?: React.ReactNode; roleOrder?: boolean }) {
   const readSet = useReadSet();
   const today = beijingDate(Date.now());
-  const days = useMemo(() => byBeijingDay(items, (it) => it.timelineAt), [items]);
+  const role = roleOf(roleOrder ? useRoleKey() : null);
+  const days = useMemo(() => {
+    const grouped = byBeijingDay(items, (it) => it.timelineAt);
+    if (!role) return grouped;
+    return grouped.map(({ day, entries }) => ({
+      day,
+      entries: [...entries].sort(
+        (a, b) =>
+          roleRank({ category: b.category, tags: b.tags, score: b.score, selected: b.selected, reports: 1 }, role) -
+            roleRank({ category: a.category, tags: a.tags, score: a.score, selected: a.selected, reports: 1 }, role) || b.timelineAt.localeCompare(a.timelineAt),
+      ),
+    }));
+  }, [items, role]);
   return (
     <div>
       {days.map(({ day, entries: list }, i) => (

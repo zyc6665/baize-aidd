@@ -10,6 +10,7 @@ import { filterParams, hasFeedFilters, itemListLd, listPath, pageMeta, readFilte
 import { ActiveFilters, CategoryTabs, FeedBar, SearchField } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
+import { RoleHint, RolePick } from "../features/feed/RolePick";
 import { EmptyState } from "../components/ui/Page";
 import { IconSearch } from "../components/icons";
 import { PhoneBar } from "../components/shell/PhoneBar";
@@ -137,6 +138,7 @@ export default function AllPage() {
         </div>
       )}
 
+      {!f.q && <RoleHint />}
       <div className={`transition-opacity duration-200 ${busy ? "opacity-50" : ""}`}>
         {data.items.length === 0 ? (
           <div className="mt-2 lg:card">
@@ -154,7 +156,7 @@ export default function AllPage() {
             </EmptyState>
           </div>
         ) : (
-          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} />
+          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} roleOrder={!f.q} headerAside={f.q ? undefined : <RolePick />} />
         )}
       </div>
       <Pagination page={data.page} pageCount={data.pageCount} href={(p) => pageHref(params, p)} />

@@ -13,6 +13,10 @@ export const KEYS = {
   changelogSeen: "baize-changelog-seen-version",
   feedbackDraft: "baize-feedback-draft-v1",
   recentSearches: "baize-recent-searches",
+  /** 读者选的岗位（RoleKey），空就是「按时间排」。 */
+  role: "baize-role",
+  /** 「选一次岗位」那条横条被关掉过；关掉就不再出现。 */
+  roleHint: "baize-role-hint-dismissed",
 } as const;
 
 const STARRED_LIMIT = 500;
@@ -120,6 +124,8 @@ const subscribeTheme = subscribeKey(KEYS.theme);
 const subscribeFont = subscribeKey(KEYS.font);
 const subscribeChangelog = subscribeKey(KEYS.changelogSeen);
 const subscribeRecentSearches = subscribeKey(KEYS.recentSearches);
+const subscribeRole = subscribeKey(KEYS.role);
+const subscribeRoleHint = subscribeKey(KEYS.roleHint);
 
 // Snapshot cache so useSyncExternalStore gets stable references between changes.
 const cache = new Map<string, unknown>();
@@ -247,6 +253,37 @@ export function setUnreadOnly(value: boolean) {
 }
 export function useUnreadOnly(): boolean {
   return useSyncExternalStore(subscribeUnreadOnly, getUnreadOnly, () => false);
+}
+
+// role: the reader's job, so the same day's cards come in the order that job cares about. Stored as the
+// role's key; anything unreadable is "not chosen", which keeps the timeline in plain time order.
+let unsavedRole: string | null | undefined;
+
+export function getRoleKey(): string | null {
+  return unsavedRole !== undefined ? unsavedRole : readRaw(KEYS.role);
+}
+
+export function setRoleKey(key: string | null) {
+  unsavedRole = writeRaw(KEYS.role, key) ? undefined : key;
+  emit(KEYS.role);
+}
+
+export function useRoleKey(): string | null {
+  return useSyncExternalStore(subscribeRole, getRoleKey, () => null);
+}
+
+/** Whether the "pick once" strip was dismissed; the strip stays away after that. */
+export function getRoleHintDismissed(): boolean {
+  return readRaw(KEYS.roleHint) === "true";
+}
+
+export function dismissRoleHint() {
+  writeRaw(KEYS.roleHint, "true");
+  emit(KEYS.roleHint);
+}
+
+export function useRoleHintDismissed(): boolean {
+  return useSyncExternalStore(subscribeRoleHint, getRoleHintDismissed, () => true);
 }
 
 // appearance

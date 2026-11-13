@@ -14,7 +14,9 @@ import { EmptyState } from "../../components/ui/Page";
 import { beijingDate, beijingTime, beijingWeekday, monthDay } from "@aihot/contracts/time";
 import { byBeijingDay, weekdayShort } from "../../lib/format";
 import { isHydrated } from "../../lib/hydration";
-import { markRead, setUnreadOnly, useReadSet, useUnreadOnly } from "../../lib/local-state";
+import { markRead, setUnreadOnly, useReadSet, useRoleKey, useUnreadOnly } from "../../lib/local-state";
+import { roleOf, roleRank, type Role } from "@aihot/site/roles";
+import { RoleHint, RoleNote, RolePick } from "./RolePick";
 import { filterParams, listPath } from "../../lib/seo";
 import { isReload, readSnapshot, restoreAnchor, saveSnapshot, useSaveOnLeave } from "../../lib/restore";
 
@@ -31,6 +33,23 @@ interface ListState {
 
 function fromResponse(r: TimelineResponse): ListState {
   return { version: 2, cards: r.cards, nextCursor: r.nextCursor, dayCounts: r.dayCounts, collapsed: [], batches: 1 };
+}
+
+/**
+ * 同一天里按岗位重排：岗位分高的在前，同分按时间新的在前，再同就按 key 定死，免得刷新后跳。
+ * 只有读者选了岗位才会走到这里；没选时列表保持原本的时间顺序。
+ */
+function orderForRole(cards: readonly TimelineCard[], role: Role): TimelineCard[] {
+  const rank = new Map(
+    cards.map((c) => [
+      c.key,
+      roleRank(
+        { category: c.item.category, tags: c.item.tags, score: c.item.score, selected: c.item.selected, reports: c.group?.reportCount ?? 1 },
+        role,
+      ),
+    ]),
+  );
+  return [...cards].sort((a, b) => rank.get(b.key)! - rank.get(a.key)! || b.anchorAt.localeCompare(a.anchorAt) || b.key.localeCompare(a.key));
 }
 
 /**
@@ -134,6 +153,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
   const navigation = useNavigation();
   const readSet = useReadSet();
   const unreadOnly = useUnreadOnly();
+  const role = roleOf(useRoleKey());
   const historyKey = location.key;
 
   // Back navigation (client side): restore synchronously from the snapshot. A full reload restores
@@ -277,10 +297,12 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
     (card: TimelineCard) => !readSet.has(card.item.id) || (card.group?.memberIds?.some((id) => !readSet.has(id)) ?? false),
     [readSet],
   );
-  const days = useMemo(
-    () => byBeijingDay(unreadOnly ? state.cards.filter(unreadVisible) : state.cards, (c) => c.anchorAt),
-    [state.cards, unreadOnly, unreadVisible],
-  );
+  const days = useMemo(() => {
+    const list = unreadOnly ? state.cards.filter(unreadVisible) : state.cards;
+    const grouped = byBeijingDay(list, (c) => c.anchorAt);
+    if (!role) return grouped;
+    return grouped.map((day) => ({ ...day, entries: orderForRole(day.entries, role) }));
+  }, [state.cards, unreadOnly, unreadVisible, role]);
 
   const visibleCount = useMemo(() => days.reduce((n, d) => n + d.entries.length, 0), [days]);
   // With the filter on, a page whose cards are all read would show nothing: keep paging until
@@ -303,8 +325,13 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
   );
   return (
     <div className="relative">
-      {/* Desktop puts it on the first date row; phones, and a list the filter left empty, keep its own row. */}
-      <div className={`mb-2 flex justify-end ${days.length ? "lg:hidden" : ""}`}>{unreadToggle}</div>
+      <RoleHint />
+      {role && <RoleNote />}
+      {/* Desktop puts the controls on the first date row; phones, and a list the filter left empty, keep their own row. */}
+      <div className={`mb-2 flex items-center justify-end gap-2 ${days.length ? "lg:hidden" : ""}`}>
+        <RolePick />
+        {unreadToggle}
+      </div>
 
       {days.length === 0 && !loadingMore && (
         <div className="lg:card">
@@ -326,7 +353,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
         const count = unreadOnly ? cards.length : (state.dayCounts[day] ?? cards.length);
         return (
           <section key={day} aria-label={day} className="lg:mb-1">
-            <DayHeader day={day} today={today} count={count} collapsed={collapsed} onToggle={() => toggleDay(day)} aside={dayIndex === 0 ? unreadToggle : undefined} asideOnPhone={false} />
+            <DayHeader day={day} today={today} count={count} collapsed={collapsed} onToggle={() => toggleDay(day)} aside={dayIndex === 0 ? <div className="flex items-center gap-2"><RolePick />{unreadToggle}</div> : undefined} asideOnPhone={false} />
             <Collapse open={!collapsed}>
                 <ol className="lg:pt-1">
                   {cards.map((c) => {
